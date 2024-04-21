@@ -1,0 +1,13 @@
+.chatView {
+  background-color: #383f49;
+  min-height: 100vh;
+  flex: 1;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+}
+
+.emptyMessage {
+  margin: 0 auto;
+  font-size: 22px;
+}

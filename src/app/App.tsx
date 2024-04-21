@@ -1,13 +1,15 @@
 import React from 'react';
-import './App.css';
+import './App.scss';
+import {MainPage} from "../pages/MainPage";
+import {StoreProvider} from "./providers/StoreProvider/ui/StoreProvider";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <div className="App-header">
-        Hello from Emojigram!
+    <StoreProvider>
+      <div className="App">
+        <MainPage/>
       </div>
-    </div>
+    </StoreProvider>
   );
 }
 
