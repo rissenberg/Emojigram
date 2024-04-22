@@ -1,0 +1,42 @@
+.sendBar {
+  display: flex;
+  gap: 20px;
+  background-color: #282c34;
+  border: solid 2px rgba(255, 255, 255, 0.1);
+  padding: 5px 20px;
+}
+
+.input {
+  width: 90%;
+  padding: 10px 20px;
+  font-size: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+}
+
+.btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.emoMenu {
+  position: absolute;
+  bottom: 70px;
+  transition: 0.3s;
+  opacity: 1;
+}
+
+.emoMenu__hide {
+  transform: translateY(70px);
+  visibility: hidden;
+  opacity: 0;
+}

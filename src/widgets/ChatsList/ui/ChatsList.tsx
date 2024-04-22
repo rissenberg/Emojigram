@@ -1,19 +1,25 @@
 import cls from "./style.module.scss"
 import {ChatItem} from "../../../entities/ChatItem";
-import {IChatItemProps} from "../../../entities/ChatItem/types/IChatItemProps";
 import {useEffect, useState} from "react";
-import {useDispatch} from "react-redux";
-import {clearCurrentChat, setCurrentChat} from "../../../app/providers/StoreProvider/lib/reducers/currentChatStorage";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../app/providers/StoreProvider/lib/types";
+import {useLocation, useNavigate} from 'react-router-dom';
 
 export const ChatsList = () => {
-  const [selectedChat, setSelectedChat] = useState<number | null>(null);
+  const location = useLocation();
+  const idSelected = parseInt(location.hash.replace('#', ''));
+  const [selectedChat, setSelectedChat] = useState<number | null>(idSelected);
+  const chatsList = useSelector((state: RootState) => state.chatsReducer.chats);
+  const navigate = useNavigate();
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    setSelectedChat(idSelected);
+  }, [idSelected]);
 
   useEffect(() => {
     const handleEscapeKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        dispatch(clearCurrentChat());
+        navigate('/chats');
         setSelectedChat(null);
       }
     };
@@ -24,37 +30,6 @@ export const ChatsList = () => {
     };
   }, []);
 
-  // Mock Data
-  const chats: IChatItemProps[] = [
-    {
-      chat: {
-        id: 1,
-        avatar: '#4b8bc0',
-        name: 'Chat No. 1',
-        users: [],
-      },
-      lastMessage: null,
-    },
-    {
-      chat: {
-        id: 2,
-        avatar: '#ddac52',
-        name: 'Chat No. 2',
-        users: [],
-      },
-      lastMessage: null,
-    },
-    {
-      chat: {
-        id: 3,
-        avatar: '#5bc04b',
-        name: 'Chat No. 3',
-        users: [],
-      },
-      lastMessage: null,
-    },
-  ];
-
   return (
     <div className={cls.chatsList}>
       <div className={cls.searchBar}>
@@ -62,14 +37,16 @@ export const ChatsList = () => {
       </div>
 
       <div className={cls.chatsContainer}>
-        {chats.map(chatItem =>
+        {chatsList.map(chatItem =>
           <ChatItem
               {...chatItem}
+              lastMessage={chatItem.messages[0]}
               is_selected = {selectedChat === chatItem.chat.id}
               onClick={() => {
-                dispatch(setCurrentChat(chatItem.chat));
+                navigate(`/chats#${chatItem.chat.id}`);
                 setSelectedChat(chatItem.chat.id);
               }}
+              key={chatItem.chat.id}
           />
         )}
       </div>

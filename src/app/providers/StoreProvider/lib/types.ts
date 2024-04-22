@@ -1,13 +1,13 @@
 import {IChat} from "../../../../entities/Chat";
 import {IUser} from "../../../../entities/User";
 import {store} from "./store";
+import {IMessage} from "../../../../entities/Message";
 
-export interface ICurrentChatStorage {
-  chat: IChat | null,
-}
-
-export interface IChatListStorage {
-  chats: IChat[],
+export interface IChatsStorage {
+  chats: {
+    chat: IChat,
+    messages: IMessage[],
+  }[],
 }
 
 export interface ICurrentUserStorage {
