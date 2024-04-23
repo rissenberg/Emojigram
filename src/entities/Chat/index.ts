@@ -1,5 +1,5 @@
-import {IChat} from "./types/Chat";
+import { IChat } from './model/types/Chat';
 
 export type {
-  IChat
-}
+	IChat
+};

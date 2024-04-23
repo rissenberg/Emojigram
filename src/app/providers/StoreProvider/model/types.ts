@@ -1,7 +1,7 @@
-import {IChat} from "../../../../entities/Chat";
-import {IUser} from "../../../../entities/User";
-import {store} from "./store";
-import {IMessage} from "../../../../entities/Message";
+import { IChat } from '../../../../entities/Chat';
+import { IUser } from '../../../../entities/User';
+import { store } from '../lib/store';
+import { IMessage } from '../../../../entities/Message';
 
 export interface IChatsStorage {
   chats: {

@@ -1,5 +1,5 @@
-import {IUser} from "./types/User";
+import { IUser } from './model/types/User';
 
 export type {
-  IUser
-}
+	IUser
+};

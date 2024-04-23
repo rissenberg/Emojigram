@@ -1,5 +1,5 @@
-import {ChatItem} from "./ui/ChatItem";
+import { ChatItem } from './ui/ChatItem';
 
 export {
-  ChatItem
-}
+	ChatItem
+};

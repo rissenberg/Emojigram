@@ -1,5 +1,5 @@
-import {IChat} from "../../Chat";
-import {IMessage} from "../../Message";
+import { IChat } from '../../../Chat';
+import { IMessage } from '../../../Message';
 
 export interface IChatItemProps {
   chat: IChat,

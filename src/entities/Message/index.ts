@@ -1,5 +1,5 @@
-import {IMessage} from "./types/Message";
+import { IMessage } from './model/types/Message';
 
 export type {
-  IMessage
-}
+	IMessage
+};

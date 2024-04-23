@@ -19,7 +19,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "linter:ts": "eslint \"**/*.{ts,tsx}\"",
+    "linter:ts:fix": "eslint \"**/*.{ts,tsx}\" --fix"
   },
   "eslintConfig": {
     "extends": [

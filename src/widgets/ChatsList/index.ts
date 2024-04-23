@@ -1,5 +1,5 @@
-import {ChatsList} from "./ui/ChatsList";
+import { ChatsList } from './ui/ChatsList';
 
 export {
-  ChatsList
-}
+	ChatsList
+};

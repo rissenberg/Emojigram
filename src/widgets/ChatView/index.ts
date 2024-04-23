@@ -1,5 +1,5 @@
-import {ChatView} from "./ui/ChatView";
+import { ChatView } from './ui/ChatView';
 
 export {
-  ChatView
-}
+	ChatView
+};

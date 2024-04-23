@@ -1,5 +1,5 @@
-import {SendMessageBar} from "./ui/SendMessageBar";
+import { SendMessageBar } from './ui/SendMessageBar';
 
 export {
-  SendMessageBar
-}
+	SendMessageBar
+};
