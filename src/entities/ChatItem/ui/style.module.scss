@@ -1,0 +1,48 @@
+.chatItem {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  padding: 10px 20px;
+  border: solid 2px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.chatItem__selected {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.avatar {
+  min-width: 50px;
+  min-height: 50px;
+  border-radius: 50%;
+}
+
+.chatInfo {
+  display: flex;
+  flex-flow: column;
+  gap: 8px;
+}
+
+.chatName {
+  font-size: 18px;
+  text-align: start;
+}
+
+.lastMessage {
+  font-size: 16px;
+  height: 20px;
+  text-align: start;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.lastMessage_text {
+  color: #9da0a3;
+}

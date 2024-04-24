@@ -1,0 +1,27 @@
+.chatsList {
+  width: 400px;
+  display: flex;
+  flex-flow: column;
+
+  min-height: 100vh;
+}
+
+.searchBar {
+  padding-top: 5px;
+}
+
+.searchInput {
+  width: 90%;
+  padding: 5px 10px;
+  font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+}
+
+.chatsContainer {
+  display: flex;
+  flex-flow: column;
+  padding-top: 10px;
+}
+
