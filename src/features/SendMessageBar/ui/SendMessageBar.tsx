@@ -1,7 +1,7 @@
 import cls from './style.module.scss';
 import EmojiPicker from 'emoji-picker-react';
 import { Theme, EmojiClickData } from 'emoji-picker-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 export const SendMessageBar = () => {
 	const [showEmoMenu, setShowEmoMenu] = useState<boolean>(false);
@@ -15,6 +15,10 @@ export const SendMessageBar = () => {
 		setInputValue(prev => prev + emo.emoji);
 	};
 
+	const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
+		setInputValue(event.target.value);
+	};
+
 	return (
 		<div className={cls.sendBar}>
 			<button className={cls.btn} onClick={toggleEmoMenu}>
@@ -24,10 +28,9 @@ export const SendMessageBar = () => {
 				<EmojiPicker
 					theme={Theme.DARK}
 					onEmojiClick={addEmoToInput}
-					// open={showEmoMenu}
 				/>
 			</div>
-			<input className={cls.input} value={inputValue} readOnly={true}/>
+			<input className={cls.input} value={inputValue} onInput={handleInput}/>
 			<button className={cls.btn}>
         SEND
 			</button>

@@ -1,7 +1,8 @@
+import { IUser } from '../../../User';
+
 export interface IMessage {
   id: number,
-  author_id: number,
-  chat_id: number,
+  author: IUser,
   content: string,
-  send_date: Date
+  send_date: string,
 }

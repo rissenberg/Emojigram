@@ -3,6 +3,6 @@ export interface IUser {
   avatar: string,
   nickname: string,
   email: string,
-  last_online: Date, // TODO решить, как отображать онлайн
+  last_online?: Date, // TODO решить, как отображать онлайн
   deleted: boolean
 }

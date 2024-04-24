@@ -10,14 +10,22 @@ export const ChatItem = (props: IChatItemProps) => {
 	return (
 		<Link to={`/chats#${props.chat.id}`} className={`${cls.chatItem} ${props.is_selected && cls.chatItem__selected}`}
 			onClick={props.onClick}>
+
 			<div className={cls.avatar} style={avatarStyle}/>
+
 			<div className={cls.chatInfo}>
 				<div className={cls.chatName}>
 					{props.chat.name}
 				</div>
-				<div className={cls.chatLastMessage}>
-					{props.lastMessage?.content}
+
+				<div className={cls.lastMessage}>
+					{props.lastMessage &&
+						<>
+							{props.lastMessage.author.nickname}: <span className={cls.lastMessage_text}>{props.lastMessage.content}</span>
+						</>
+					}
 				</div>
+
 			</div>
 		</Link>
 	);

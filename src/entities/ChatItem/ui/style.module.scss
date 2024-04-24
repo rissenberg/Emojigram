@@ -5,6 +5,7 @@
   padding: 10px 20px;
   border: solid 2px rgba(255, 255, 255, 0.1);
   cursor: pointer;
+
   text-decoration: none;
   color: inherit;
 
@@ -18,21 +19,30 @@
 }
 
 .avatar {
-  width: 50px;
-  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
   border-radius: 50%;
 }
 
 .chatInfo {
   display: flex;
   flex-flow: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .chatName {
-  font-size: 20px;
+  font-size: 18px;
+  text-align: start;
 }
 
 .lastMessage {
-  font-size: 18px;
+  font-size: 16px;
+  height: 20px;
+  text-align: start;
+  overflow: hidden;
+  text-overflow: clip;
+}
+
+.lastMessage_text {
+  color: #9da0a3;
 }

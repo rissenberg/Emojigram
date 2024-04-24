@@ -5,6 +5,7 @@ import { SendMessageBar } from '../../../features/SendMessageBar';
 import { useLocation } from 'react-router-dom';
 import { getCurrentChat } from '../model/selectors/GetCurrentChat';
 import { RootState } from '../../../app/providers/StoreProvider';
+import { Message } from '../../../entities/Message';
 
 export const ChatView = () => {
 	const location = useLocation();
@@ -15,9 +16,9 @@ export const ChatView = () => {
 	return (
 		<div className={cls.chatView}>
 			{!currentChat &&
-          <div className={cls.emptyMessage}>
-              Choose a chat to start
-          </div>
+				<div className={cls.emptyMessage}>
+						Choose a chat to start
+				</div>
 			}
 			{currentChat &&
 				<>
@@ -31,7 +32,14 @@ export const ChatView = () => {
 					</div>
 
 					<div className={cls.messagesContainer}>
-
+						{currentChat.messages.length === 0 &&
+							<div className={cls.emptyMessage}>
+									No messages here yet!
+							</div>
+						}
+						{currentChat.messages.map((message) => (
+							<Message {...message} key={message.id}/>
+						))}
 					</div>
 
 					<SendMessageBar/>

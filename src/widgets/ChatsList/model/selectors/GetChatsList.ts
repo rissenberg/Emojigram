@@ -1,4 +1,4 @@
-import { RootState } from '../../../../app/providers/StoreProvider/model/types';
+import { RootState } from '../../../../app/providers/StoreProvider';
 
 export const getChatsList = (state: RootState) => {
 	return state.chatsReducer.chats.map(chatItem => ({
