@@ -1,0 +1,17 @@
+{
+  "name": "emojigram_backend",
+  "version": "1.0.0",
+  "description": "Backend for Emojigram web app",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./build/index.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@types/express": "^4.17.21",
+    "express": "^4.19.2"
+  }
+}
