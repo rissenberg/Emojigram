@@ -10,13 +10,14 @@ export const getAllChatsHandler = (req: Request, res: Response) => {
 	});
 };
 
-export const createChatHandler = (req: Request, res: Response) => {
+export const createChatHandler = async (req: Request, res: Response) => {
 	console.log(req.method, req.url);
 	try {
-		DB.chats.push(req.body);
-	}
-	catch (err) {
-		return res.status(400).json({ error: err });
+		const body = req.body;
+		console.log(body);
+		DB.chats.push(body);
+	} catch (err) {
+		return res.status(400).json({error: err});
 	}
 	return res.status(200).json({
 		chats: DB.chats

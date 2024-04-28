@@ -6,13 +6,11 @@ const API_PATH_PREFIX = '/api/v1';
 const PORT = 8080;
 
 const app = express();
-const DB = DB_MOCK;
 
 app.get(`${API_PATH_PREFIX}/chats`, getAllChatsHandler);
 app.post(`${API_PATH_PREFIX}/chats`, createChatHandler);
 
-app.get('*', (req, res) => {
-	console.log(req.method, req.url);
+app.use('*', (req, res) => {
 	return res.status(200).json('404 Path Not Found');
 });
 
