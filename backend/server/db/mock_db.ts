@@ -68,7 +68,7 @@ const users_chats: IUsersChatsDB[] = [
 	},
 	{
 		id: 3,
-		user_id: 1,
+		user_id: 3,
 		chat_id: 1,
 		role: 'default',
 		joined_at: new Date('12.04.24 12:48'),
@@ -129,7 +129,11 @@ const messages: IMessagesDB[] = [
 
 export const DB_MOCK = {
 	users,
+	users_counter: 4,
 	chats,
+	chats_counter: 4,
 	users_chats,
+	users_chats_counter: 7,
 	messages,
+	messages_counter: 5,
 };

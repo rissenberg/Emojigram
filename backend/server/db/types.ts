@@ -6,6 +6,7 @@ export interface IChatsDB {
 	created_at: Date,
 }
 
+
 export interface IUsersDB {
 	id: number,
 	username: string,

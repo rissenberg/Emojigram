@@ -5,6 +5,5 @@ export interface IChat {
   avatar: string,
   name: string,
   users: IUser[],
-  admin_id?: number,
   created?: Date,
 }
