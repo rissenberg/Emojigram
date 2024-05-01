@@ -1,9 +1,9 @@
 import { DB_MOCK } from '../db/mock_db';
-import {IChatsDB} from "../db/types";
-import {InnerResponse} from "../model/InnerResponse";
-import {IChatResponse, IChatsListResponse} from "../model/Chats";
-import {IMessageResponse} from "../model/Messages";
-import {IUserResponse} from "../model/Users";
+import {IChatsDB, IUsersChatsDB} from "../db/types";
+import {InnerResponse} from "../model/types/InnerResponse";
+import {IChatResponse, IChatsListResponse, ICreateChatRequest} from "../model/types/Chats";
+import {IMessageResponse} from "../model/types/Messages";
+import {IUserResponse} from "../model/types/Users";
 
 const DB = DB_MOCK;
 
@@ -19,7 +19,7 @@ export class ChatsRepository {
 					.filter(chat => chatsIDs.includes(chat.id))
 					.map(chat => {
 						const lastMessageDB = DB.messages.findLast(msg => msg.chat_id === chat.id);
-						const authorDB = lastMessageDB && DB.users.find(user => user.id === lastMessageDB.author_id);
+						const authorDB = lastMessageDB && DB.users[lastMessageDB.author_id - 1];
 
 						const last_message: IMessageResponse | null = authorDB ? {
 							id: lastMessageDB.id,
@@ -58,7 +58,7 @@ export class ChatsRepository {
 
 	getChatByID = (chatID: number): InnerResponse => {
 		try {
-			const chatDB = DB.chats.find(chat => chat.id === chatID);
+			const chatDB = DB.chats[chatID - 1];
 
 			if (!chatDB) {
 				return {
@@ -70,7 +70,7 @@ export class ChatsRepository {
 			const users: Array<IUserResponse | null> = DB.users_chats
 				.filter(item => item.chat_id === chatID)
 				.map(user_chat => {
-					const user = DB.users.find(user => user.id === user_chat.user_id);
+					const user = DB.users[user_chat.user_id - 1];
 
 					if (!user)
 						return null
@@ -95,7 +95,7 @@ export class ChatsRepository {
 				messages: DB.messages
 					.filter(msg => msg.chat_id === chatID)
 					.map(msg => {
-						const authorDB = DB.users.find(user => user.id === msg.author_id);
+						const authorDB = DB.users[msg.author_id - 1];
 						return ({
 							id: msg.id,
 							content: msg.content,
@@ -123,32 +123,31 @@ export class ChatsRepository {
 		}
 	}
 
-	createChat = (chat: IChatsDB, authorID: number): InnerResponse => {
+	createChat = (chat: ICreateChatRequest, authorID: number): InnerResponse => {
 		try {
-			const newChat: IChatsDB = {
-				id: DB.chats_counter,
+			const newChatID = DB.chats.push({
+				id: DB.chats.length + 1,
 				name: chat.name,
 				avatar: chat.avatar,
 				type: 'group',
 				created_at: new Date(),
-			};
+			});
 
-			DB.chats.push(newChat);
+			console.log(newChatID);
 
 			DB.users_chats.push({
-				id: DB.users_chats_counter,
+				id: DB.users_chats.length + 1,
 				user_id: authorID,
-				chat_id: DB.chats_counter,
+				chat_id: newChatID,
 				role: 'admin',
 				joined_at: new Date(),
 			});
 
-			DB.chats_counter++;
-			DB.users_chats_counter++;
-
 			return {
 				status: 200,
-				data: newChat,
+				data: {
+					chatID: newChatID,
+				},
 			}
 		}
 		catch (error) {

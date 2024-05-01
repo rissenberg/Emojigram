@@ -21,3 +21,9 @@ export interface IChatResponse {
 	},
 	messages: IMessageResponse[],
 }
+
+export interface ICreateChatRequest {
+	name: string,
+	avatar?: string,
+	type: 'group' | 'dialog',
+}

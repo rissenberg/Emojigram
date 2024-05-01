@@ -1,6 +1,7 @@
-import {InnerResponse} from "../model/InnerResponse";
+import {InnerResponse} from "../model/types/InnerResponse";
 import {ChatsRepository} from "../repository/repo_chats";
-import {IChatsDB} from "../db/types";
+import {IUserResponse} from "../model/types/Users";
+import {ICreateChatRequest} from "../model/types/Chats";
 
 
 export class ChatsService {
@@ -22,9 +23,20 @@ export class ChatsService {
 		}
 	}
 
-	getChatByID = (chatID: number): InnerResponse => {
+	getChatByID = (chatID: number, currentUserID: number): InnerResponse => {
 		try {
-			return this.ChatsRepository.getChatByID(chatID);
+			const response = this.ChatsRepository.getChatByID(chatID);
+
+			if (response.status === 200 && !response.data.chat.users
+				.map((user: IUserResponse) => user.id)
+				.includes(currentUserID)) {
+				return ({
+					status: 403,
+					error: `Chats service error: User is not in the chat`,
+				})
+			}
+
+			return response;
 		}
 		catch (error) {
 			return {
@@ -34,9 +46,14 @@ export class ChatsService {
 		}
 	}
 
-	createChat = (chat: IChatsDB, authorID: number): InnerResponse => {
+	createChat = (chat: ICreateChatRequest, authorID: number): InnerResponse => {
 		try {
-			return this.ChatsRepository.createChat(chat, authorID);
+			const response = this.ChatsRepository.createChat(chat, authorID);
+
+			if (response.status === 200)
+				return this.ChatsRepository.getChatByID(response.data.chatID);
+			else
+				return response;
 		}
 		catch (error) {
 			return {

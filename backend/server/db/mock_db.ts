@@ -129,11 +129,7 @@ const messages: IMessagesDB[] = [
 
 export const DB_MOCK = {
 	users,
-	users_counter: 4,
 	chats,
-	chats_counter: 4,
 	users_chats,
-	users_chats_counter: 7,
 	messages,
-	messages_counter: 5,
 };
