@@ -1,8 +1,6 @@
-import { IUserResponse } from './Users';
-
 export interface IMessageResponse {
 	id: number,
-	author: IUserResponse | null,
+	author_id: number,
 	content: string,
 	sent_at: Date,
 }

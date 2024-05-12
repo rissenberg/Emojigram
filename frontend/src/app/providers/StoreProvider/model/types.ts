@@ -4,10 +4,14 @@ import { store } from '../lib/store';
 import { IMessage } from '../../../../entities/Message';
 
 export interface IChatsStorage {
-  chats: {
+  chats: Map <number, {
     chat: IChat,
     messages: IMessage[],
-  }[],
+  }>,
+}
+
+export interface IUsersStorage {
+  users: Map <number, IUser>,
 }
 
 export interface ICurrentUserStorage {

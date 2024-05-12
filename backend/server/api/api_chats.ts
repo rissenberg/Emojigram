@@ -3,7 +3,7 @@ import { ChatsService } from '../services/service_chats';
 import { createChatValidator } from '../model/validators/ChatValidators';
 
 // TODO delete MOCK
-const userID = 2;
+const userID = 1;
 
 export class ChatsAPI {
 	ChatsService: ChatsService;

@@ -1,5 +1,5 @@
 import { IMessageResponse } from './Messages';
-import { IUserResponse } from './Users';
+import { IChatUserList } from './Users';
 
 export interface IChatsListResponse {
 	chats: {
@@ -8,7 +8,7 @@ export interface IChatsListResponse {
 		avatar?: string,
 		type: 'group' | 'dialog',
 		last_message: IMessageResponse | null,
-	}[]
+	} []
 }
 
 export interface IChatResponse {
@@ -17,7 +17,7 @@ export interface IChatResponse {
 		name?: string,
 		avatar?: string,
 		type: 'group' | 'dialog',
-		users: Array<IUserResponse | null>,
+		users: IChatUserList[],
 	},
 	messages: IMessageResponse[],
 }

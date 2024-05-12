@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { IChatsStorage } from '../../model/types';
 
 const initialState: IChatsStorage = {
-	chats: [],
+	chats: new Map(),
 };
 
 const chatsSlice = createSlice({
@@ -10,11 +10,16 @@ const chatsSlice = createSlice({
 	initialState,
 	reducers: {
 		addChat: (state, action) => {
-			state.chats.push(action.payload);
+			if (state.chats.has(action.payload.id))
+				return;
+			state.chats.set(action.payload.chat.id, action.payload);
+		},
+		updateChat: (state, action) => {
+			state.chats.set(action.payload.chat.id, action.payload);
 		},
 	},
 });
 
-export const { addChat } = chatsSlice.actions;
+export const { addChat, updateChat } = chatsSlice.actions;
 
 export default chatsSlice.reducer;
