@@ -1,5 +1,4 @@
 import { DB_MOCK } from '../db/mock_db';
-import {IChatsDB, IUsersChatsDB} from "../db/types";
 import {InnerResponse} from "../model/types/InnerResponse";
 import {IChatResponse, IChatsListResponse, ICreateChatRequest} from "../model/types/Chats";
 import {IMessageResponse} from "../model/types/Messages";

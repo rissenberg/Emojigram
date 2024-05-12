@@ -4,5 +4,5 @@ export interface IUser {
   nickname: string,
   email: string,
   last_online?: Date, // TODO решить, как отображать онлайн
-  deleted: boolean
+  deleted?: boolean
 }
