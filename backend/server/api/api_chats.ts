@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import {ChatsService} from "../services/service_chats";
-import {createChatValidator} from "../model/validators/ChatValidators";
+import { ChatsService } from '../services/service_chats';
+import { createChatValidator } from '../model/validators/ChatValidators';
 
 // TODO delete MOCK
 const userID = 2;
@@ -23,7 +23,7 @@ export class ChatsAPI {
 			return res.status(response.status).json({
 				error: response.error,
 			});
-	}
+	};
 
 	getChatByID = (req: Request, res: Response) => {
 		console.log(req.method, req.url);
@@ -37,7 +37,7 @@ export class ChatsAPI {
 			return res.status(response.status).json({
 				error: response.error,
 			});
-	}
+	};
 
 	createChat = (req: Request, res: Response) => {
 		console.log(req.method, req.url);
@@ -56,5 +56,5 @@ export class ChatsAPI {
 			return res.status(response.status).json({
 				error: response.error,
 			});
-	}
+	};
 }

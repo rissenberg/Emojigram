@@ -1,7 +1,7 @@
-import {InnerResponse} from "../model/types/InnerResponse";
-import {ChatsRepository} from "../repository/repo_chats";
-import {IUserResponse} from "../model/types/Users";
-import {ICreateChatRequest} from "../model/types/Chats";
+import { InnerResponse } from '../model/types/InnerResponse';
+import { ChatsRepository } from '../repository/repo_chats';
+import { IUserResponse } from '../model/types/Users';
+import { ICreateChatRequest } from '../model/types/Chats';
 
 
 export class ChatsService {
@@ -19,9 +19,9 @@ export class ChatsService {
 			return {
 				status: 500,
 				error: `Chats service error: ${String(error)}`,
-			}
+			};
 		}
-	}
+	};
 
 	getChatByID = (chatID: number, currentUserID: number): InnerResponse => {
 		try {
@@ -32,8 +32,8 @@ export class ChatsService {
 				.includes(currentUserID)) {
 				return ({
 					status: 403,
-					error: `Chats service error: User is not in the chat`,
-				})
+					error: 'Chats service error: User is not in the chat',
+				});
 			}
 
 			return response;
@@ -42,9 +42,9 @@ export class ChatsService {
 			return {
 				status: 500,
 				error: `Chats service error: ${String(error)}`,
-			}
+			};
 		}
-	}
+	};
 
 	createChat = (chat: ICreateChatRequest, authorID: number): InnerResponse => {
 		try {
@@ -59,7 +59,7 @@ export class ChatsService {
 			return {
 				status: 500,
 				error: `Chats service error: ${String(error)}`,
-			}
+			};
 		}
-	}
+	};
 }

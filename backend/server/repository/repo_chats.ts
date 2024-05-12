@@ -1,8 +1,8 @@
 import { DB_MOCK } from '../db/mock_db';
-import {InnerResponse} from "../model/types/InnerResponse";
-import {IChatResponse, IChatsListResponse, ICreateChatRequest} from "../model/types/Chats";
-import {IMessageResponse} from "../model/types/Messages";
-import {IUserResponse} from "../model/types/Users";
+import { InnerResponse } from '../model/types/InnerResponse';
+import { IChatResponse, IChatsListResponse, ICreateChatRequest } from '../model/types/Chats';
+import { IMessageResponse } from '../model/types/Messages';
+import { IUserResponse } from '../model/types/Users';
 
 const DB = DB_MOCK;
 
@@ -40,20 +40,20 @@ export class ChatsRepository {
 							last_message,
 						});
 					})
-			}
+			};
 
 			return {
 				status: 200,
 				data: response,
-			}
+			};
 		}
 		catch (error) {
 			return {
 				status: 500,
 				error: `Chats repository error: ${String(error)}`,
-			}
+			};
 		}
-	}
+	};
 
 	getChatByID = (chatID: number): InnerResponse => {
 		try {
@@ -62,8 +62,8 @@ export class ChatsRepository {
 			if (!chatDB) {
 				return {
 					status: 404,
-					error: `Chat was not found`,
-				}
+					error: 'Chat was not found',
+				};
 			}
 
 			const users: Array<IUserResponse | null> = DB.users_chats
@@ -72,7 +72,7 @@ export class ChatsRepository {
 					const user = DB.users[user_chat.user_id - 1];
 
 					if (!user)
-						return null
+						return null;
 
 					return ({
 						id: user.id,
@@ -105,22 +105,22 @@ export class ChatsRepository {
 								email: authorDB.email,
 								avatar: authorDB.avatar,
 							} : null
-						})
+						});
 					}),
-			}
+			};
 
 			return {
 				status: 200,
 				data: response,
-			}
+			};
 		}
 		catch (error) {
 			return {
 				status: 500,
 				error: `Chats repository error: ${String(error)}`,
-			}
+			};
 		}
-	}
+	};
 
 	createChat = (chat: ICreateChatRequest, authorID: number): InnerResponse => {
 		try {
@@ -147,13 +147,13 @@ export class ChatsRepository {
 				data: {
 					chatID: newChatID,
 				},
-			}
+			};
 		}
 		catch (error) {
 			return {
 				status: 500,
 				error: `Chats repository error: ${String(error)}`,
-			}
+			};
 		}
-	}
+	};
 }

@@ -1,5 +1,5 @@
-import {IMessageResponse} from "./Messages";
-import {IUserResponse} from "./Users";
+import { IMessageResponse } from './Messages';
+import { IUserResponse } from './Users';
 
 export interface IChatsListResponse {
 	chats: {

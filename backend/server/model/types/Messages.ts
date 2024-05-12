@@ -1,4 +1,4 @@
-import {IUserResponse} from "./Users";
+import { IUserResponse } from './Users';
 
 export interface IMessageResponse {
 	id: number,

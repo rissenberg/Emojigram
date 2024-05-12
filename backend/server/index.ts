@@ -1,10 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import {ChatsAPI} from "./api/api_chats";
+import { ChatsAPI } from './api/api_chats';
 import {
 	API_PATH_PREFIX,
 	SERVER_PORT
-} from "./config/config";
+} from './config/config';
 
 const app = express();
 

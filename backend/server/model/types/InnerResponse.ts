@@ -1,5 +1,5 @@
 export interface InnerResponse {
 	status: number,
-	data?: any,
+	data?: never,
 	error?: string,
 }
