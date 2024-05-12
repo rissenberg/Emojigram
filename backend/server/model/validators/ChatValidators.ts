@@ -1,10 +1,4 @@
-interface IBody {
-	name?: string;
-	avatar?: string;
-	type?: string;
-}
-
-export const createChatValidator = (body: IBody) => {
+export const createChatValidator = (body: any) => {
 	if (!body.name)
 		return false;
 	else if (typeof body?.name !== 'string')

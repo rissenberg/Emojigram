@@ -10,6 +10,7 @@
     "linter:ts:fix": "eslint \"**/*.{ts,tsx}\" --fix"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "typescript": "^5.4.5"
   },
