@@ -3,7 +3,7 @@ import { IMessage } from '../../../Message';
 
 export interface IChatItemProps {
   chat: IChat,
-  lastMessage: IMessage | null; // TODO не забыть изменить
+  lastMessage: IMessage;
   is_selected?: boolean,
   onClick?: () => void,
 }

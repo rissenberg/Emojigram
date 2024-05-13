@@ -47,5 +47,6 @@ module.exports = {
 		],
 		'no-unused-vars': 'warn',
 		'object-curly-spacing': ['error', 'always'],
+		'@typescript-eslint/no-explicit-any': 'off'
 	}
 };

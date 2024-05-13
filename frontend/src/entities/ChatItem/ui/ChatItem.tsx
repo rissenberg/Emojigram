@@ -1,27 +1,37 @@
 import { IChatItemProps } from '../model/types/IChatItemProps';
 import { Link } from 'react-router-dom';
 import cls from './style.module.scss';
+import { useGetUser } from '../../User';
 
 export const ChatItem = (props: IChatItemProps) => {
+	const {
+		chat,
+		lastMessage,
+		is_selected,
+		onClick,
+	} = props;
+
+	const [ author]  = useGetUser(lastMessage?.author_id);
+
 	const avatarStyle = {
-		backgroundColor: props.chat.avatar,
+		backgroundColor: chat.avatar,
 	};
 
 	return (
-		<Link to={`/chats#${props.chat.id}`} className={`${cls.chatItem} ${props.is_selected && cls.chatItem__selected}`}
-			onClick={props.onClick}>
+		<Link to={`/chats#${chat.id}`} className={`${cls.chatItem} ${is_selected && cls.chatItem__selected}`}
+			onClick={onClick}>
 
 			<div className={cls.avatar} style={avatarStyle}/>
 
 			<div className={cls.chatInfo}>
 				<div className={cls.chatName}>
-					{props.chat.name}
+					{chat.name}
 				</div>
 
 				<div className={cls.lastMessage}>
-					{props.lastMessage &&
+					{lastMessage &&
 						<>
-							{props.lastMessage.author.nickname}: <span className={cls.lastMessage_text}>{props.lastMessage.content}</span>
+							{author && author.username}: <span className={cls.lastMessage_text}>{lastMessage.content}</span>
 						</>
 					}
 				</div>

@@ -8,7 +8,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getChatList } from '../api/getChatList';
 import { AppDispatch } from '../../../app/providers/StoreProvider';
 import { IGetChatListResponse } from '../model/types/apiResponse';
-import { addChat } from '../../../app/providers/StoreProvider/lib/slices/ChatsStorage';
+import { pushChat } from '../../../app/providers/StoreProvider/lib/slices/ChatsStorage';
 
 export const ChatsList = () => {
 	const location = useLocation();
@@ -31,9 +31,9 @@ export const ChatsList = () => {
 
 	useEffect(() => {
 		data?.chats.forEach(chatItem => {
-			dispatch(addChat({
+			dispatch(pushChat({
 				chat: chatItem,
-				messages: [chatItem.last_message]
+				messages: chatItem.last_message ? [chatItem.last_message] : []
 			}));
 		});
 	}, [data]);

@@ -1,6 +1,6 @@
 import { InnerResponse } from '../model/types/InnerResponse';
 import { ChatsRepository } from '../repository/repo_chats';
-import { IUserResponse } from '../model/types/Users';
+import { IChatUserList } from '../model/types/Users';
 import { ICreateChatRequest } from '../model/types/Chats';
 
 
@@ -28,7 +28,7 @@ export class ChatsService {
 			const response = this.ChatsRepository.getChatByID(chatID);
 
 			if (response.status === 200 && !response.data.chat.users
-				.map((user: IUserResponse) => user.id)
+				.map((user: IChatUserList) => user.id)
 				.includes(currentUserID)) {
 				return ({
 					status: 403,

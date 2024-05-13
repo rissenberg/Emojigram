@@ -6,7 +6,7 @@ const initialState: ICurrentUserStorage = {
 	user: {
 		id: 1,
 		avatar: '#dd6b41',
-		nickname: 'Yanka',
+		username: 'Yanka',
 		email: 'yanka@mail.ru',
 	},
 };

@@ -10,6 +10,10 @@ export interface IChatsStorage {
   }[],
 }
 
+export interface IUsersStorage {
+  users: Map <number, IUser>,
+}
+
 export interface ICurrentUserStorage {
   user: IUser | null,
 }

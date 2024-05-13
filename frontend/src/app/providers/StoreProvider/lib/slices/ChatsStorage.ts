@@ -9,12 +9,21 @@ const chatsSlice = createSlice({
 	name: 'chats',
 	initialState,
 	reducers: {
-		addChat: (state, action) => {
-			state.chats.push(action.payload);
+		pushChat: (state, action) => {
+			const index = state.chats.findIndex(item => item.chat.id === action.payload.chat.id);
+
+			if (index === -1)
+				state.chats.push(action.payload);
 		},
-	},
+		updateChat: (state, action) => {
+			const index = state.chats.findIndex(item => item.chat.id === action.payload?.chat.id);
+
+			if (index !== -1)
+				state.chats[index] = action.payload;
+		},
+	}
 });
 
-export const { addChat } = chatsSlice.actions;
+export const { pushChat, updateChat } = chatsSlice.actions;
 
 export default chatsSlice.reducer;
