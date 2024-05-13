@@ -1,7 +1,10 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger/swagger';
 import {
+	ALLOWED_ORIGINS,
 	API_PATH_PREFIX,
 	SERVER_PORT
 } from './config/config';
@@ -14,11 +17,14 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors({
-	origin: ['http://localhost:3000'],
+	origin: ALLOWED_ORIGINS,
 	methods: ['GET', 'POST', 'PUT', 'DELETE'],
 	preflightContinue: false,
 	optionsSuccessStatus: 204
 }));
+
+// API Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // API handlers declaration
 const chatsAPI = new ChatsAPI();

@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { ChatsService } from '../services/service_chats';
 import { createChatValidator } from '../model/validators/ChatValidators';
+import { API_PATH_PREFIX } from '../config/config';
+import { ChatRequestSchema } from '../model/types/Chats';
 
 // TODO delete MOCK
 const userID = 1;
@@ -58,3 +60,85 @@ export class ChatsAPI {
 			});
 	};
 }
+
+
+export const swChatsRoute = {
+	[`${API_PATH_PREFIX}/chats`]: {
+		'get': {
+			'summary': 'Get users chat list',
+			'tags': [
+				'Chats'
+			],
+			'responses': {
+				'200': {
+					'description': 'Success'
+				},
+				'500': {
+					'description': 'Internal Error'
+				}
+			}
+		},
+
+
+		'post': {
+			'summary': 'Create new chat',
+			'tags': [
+				'Chats'
+			],
+			'requestBody': {
+				'content': {
+					'application/json': {
+						'schema': {
+							...ChatRequestSchema
+						}
+					}
+				}
+			},
+			'responses': {
+				'200': {
+					'description': 'Success'
+				},
+				'400': {
+					'description': 'Invalid request body'
+				},
+				'500': {
+					'description': 'Internal Error'
+				}
+			}
+		},
+	},
+
+
+	[`${API_PATH_PREFIX}/chats/{id}`]: {
+		'get': {
+			'summary': 'Get chat history by id',
+			'tags': [
+				'Chats'
+			],
+			parameters: [
+				{
+					'name': 'id',
+					'in': 'path',
+					'required': true,
+					'schema': {
+						'type': 'integer'
+					}
+				}
+			],
+			'responses': {
+				'200': {
+					'description': 'Success',
+				},
+				'403': {
+					'description': 'Forbidden. User is not in the chat'
+				},
+				'404': {
+					'description': 'Not Found'
+				},
+				'500': {
+					'description': 'Internal Error'
+				}
+			}
+		}
+	},
+};

@@ -27,3 +27,21 @@ export interface ICreateChatRequest {
 	avatar?: string,
 	type: 'group' | 'dialog',
 }
+
+export const ChatRequestSchema = {
+	'type': 'object',
+	'properties': {
+		'name': {
+			'type': 'string',
+			'default': 'New Chat'
+		},
+		'avatar': {
+			'type': 'string',
+			'default': '#4b98e4'
+		},
+		'type': {
+			'type': 'string',
+			'default': 'group || dialog',
+		}
+	}
+};

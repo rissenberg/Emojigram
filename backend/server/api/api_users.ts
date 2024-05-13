@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { UsersService } from '../services/service_users';
+import { API_PATH_PREFIX } from '../config/config';
 
 
 export class UsersAPI {
@@ -23,3 +24,36 @@ export class UsersAPI {
 			});
 	};
 }
+
+
+export const swUsersRoute = {
+	[`${API_PATH_PREFIX}/users/{id}`]: {
+		'get': {
+			'summary': 'Get user by id',
+			'tags': [
+				'Users'
+			],
+			parameters: [
+				{
+					'name': 'id',
+					'in': 'path',
+					'required': true,
+					'schema': {
+						'type': 'integer'
+					}
+				}
+			],
+			'responses': {
+				'200': {
+					'description': 'Success',
+				},
+				'404': {
+					'description': 'Not Found'
+				},
+				'500': {
+					'description': 'Internal Error'
+				}
+			}
+		}
+	},
+};
