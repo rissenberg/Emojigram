@@ -26,15 +26,19 @@
 После чего сайт будет доступен по ссылке http://localhost:3000
 
 ## Стек технологий
+### Frontend
 - React + TypeScript
 - React Router DOM
 - Архитектура Feature-Sliced Design
 - Redux Toolkit
+- TanStack Query
 - CSS Modules
 
+### Backend
+- Node.js Express
+- REST API
+
 **В будущем так же:**
-- TanStack Query
-- Node.js Backend Server
 - MongoDB 
 
 ## Структура проекта
@@ -77,4 +81,25 @@
     │   └── style.module.scss - стили css modules
     │
     └── index.ts - публичный API компонента
+```
+
+### Backend
+
+Backend проекта имеет архитектуру REST API и следующую структуру:
+```
+.
+├── api/
+│   └── Здесь лежт обработчики запросов 
+├── config/
+│   └── Здесь лежат конфиги приложения
+├── db/
+│   └── Здесь лежит логика работы с БД (пока что замокана)
+├── model/
+│   └── Здесь лежат интерфейсы для типов запросов и сущностей БД 
+├── repository/
+│   └── Здесь лежит логика обращения к БД
+├── services/
+│   └── Здесь лежит бизнес логика работы с хранимыми данными
+│
+└── index.tsx - точка старта приложения - API Gateway
 ```
