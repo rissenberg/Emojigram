@@ -1,13 +1,16 @@
 import cls from './style.module.scss';
 import { IMessage } from '../model/types/Message';
+import { useGetUser } from '../../User';
 
 export const Message = (message: IMessage) => {
+	const [ author]  = useGetUser(message.author_id);
+
 	const avatarStyle = {
-		backgroundColor: message.author.avatar,
+		backgroundColor: author ? author.avatar : '#777',
 	};
 
 	const nicknameStyle = {
-		color: message.author.avatar,
+		color: author ? author.avatar : '#777',
 	};
 
 	// TODO делать разные стили для своего и чужого сообщения
@@ -19,7 +22,7 @@ export const Message = (message: IMessage) => {
 			<div className={cls.message}>
 
 				<div className={cls.messageText} style={nicknameStyle}>
-					{message.author.nickname}
+					{author && author.username}
 				</div>
 
 				<div className={cls.messageText}>

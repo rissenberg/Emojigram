@@ -2,8 +2,7 @@ import { DB_MOCK } from '../db/mock_db';
 import { InnerResponse } from '../model/types/InnerResponse';
 import { IChatResponse, ICreateChatRequest } from '../model/types/Chats';
 import { IMessageResponse } from '../model/types/Messages';
-import { IChatUserList, IUserResponse } from '../model/types/Users';
-import { IMessagesDB } from '../db/types';
+import { IChatUserList } from '../model/types/Users';
 
 const DB = DB_MOCK;
 
@@ -93,7 +92,7 @@ export class ChatsRepository {
 					type: chatDB.type,
 					users,
 				},
-				messages,
+				messages: messages.reverse(),
 			};
 
 			return {

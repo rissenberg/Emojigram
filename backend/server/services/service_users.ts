@@ -16,7 +16,7 @@ export class UsersService {
 		catch (error) {
 			return {
 				status: 500,
-				error: `Chats service error: ${String(error)}`,
+				error: `Users service error: ${String(error)}`,
 			};
 		}
 	};

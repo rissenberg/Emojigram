@@ -1,16 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { enableMapSet, produce } from 'immer';
 import { IUsersStorage } from '../../model/types';
+
+enableMapSet();
 
 const initialState: IUsersStorage = {
 	users: new Map(),
 };
 
 const usersSlice = createSlice({
-	name: 'chats',
+	name: 'users',
 	initialState,
 	reducers: {
 		updateUser: (state, action) => {
-			state.users.set(action.payload.id, action.payload);
+			return produce(state, (draft) => {
+				draft.users.set(action.payload.id, action.payload);
+			});
 		},
 	},
 });

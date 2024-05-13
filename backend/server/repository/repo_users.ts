@@ -12,7 +12,7 @@ export class UsersRepository {
 			if (!userDB)
 				return {
 					status: 404,
-					error: 'Chat was not found',
+					error: 'User was not found',
 				};
 
 			const response: IUserResponse = {
@@ -32,7 +32,7 @@ export class UsersRepository {
 		catch (error) {
 			return {
 				status: 500,
-				error: `Chats repository error: ${String(error)}`,
+				error: `Users repository error: ${String(error)}`,
 			};
 		}
 	};
