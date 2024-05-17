@@ -4,14 +4,14 @@
 
 > https://dbdiagram.io/d/Emojigram-DB-6647a507f84ecd1d227be3a6
 
-![img.png](img.png)
+![image](https://github.com/rissenberg/Emojigram/assets/114286666/c8d508f6-3d5e-484a-8e21-097634fe3c51)
 
 ## Физическая База Данных
 
 Так как в проекте предусматривается использование MongoDB, в которой данные хранятся в виде коллекций ключ-значение, а не в виде реляционных таблиц, БД будет иметь следующий вид:
 
 ### Users Collection
-```json
+```ts
 {
     "_id": string,
     "email": string,
@@ -23,7 +23,7 @@
 }
 ```
 ### Sessions Collection
-```json
+```ts
 {
     "_id": number,
     "token": string,
@@ -31,7 +31,7 @@
 }
 ```
 ### Chats Collection
-```json
+```ts
 {
     "_id": number,
     "name": string,
@@ -47,7 +47,7 @@
 }
 ```
 ### Messages Collection
-```json
+```ts
 {
     "_id": number,
     "sender_id": string,
