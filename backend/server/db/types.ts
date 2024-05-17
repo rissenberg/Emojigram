@@ -1,33 +1,32 @@
 export interface IChatsDB {
-	id: number,
-	name?: string,
-	type: 'group' | 'dialog',
-	avatar?: string,
-	created_at: Date,
+	_id: number,
+	name: string,
+	created: Date,
+	avatar_url?: string,
+	deleted: boolean,
+	user_ids: {
+		id: string,
+		role: 'default' | 'admin',
+		joined_at: Date,
+		removed: boolean
+	}[]
 }
-
 
 export interface IUsersDB {
-	id: number,
-	username: string,
+	_id: string,
 	email: string,
 	password: string,
-	avatar?: string,
-	created_at: Date,
-}
-
-export interface IUsersChatsDB {
-	id: number,
-	user_id: number,
-	chat_id: number,
-	role: 'admin' | 'default',
-	joined_at?: Date,
+	created: Date,
+	avatar_url?: string,
+	deleted: boolean,
+	chat_ids: number[]
 }
 
 export interface IMessagesDB {
-	id: number,
-	author_id: number,
-	chat_id: number,
-	content: string,
+	_id: number,
+	sender_id: string,
+	receiver_id: string | number,
 	sent_at: Date,
+	content: string,
+	deleted: boolean
 }

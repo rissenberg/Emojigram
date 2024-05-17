@@ -1,6 +1,6 @@
 {
   "name": "emojigram_backend",
-  "version": "1.2.0",
+  "version": "2.1.0",
   "description": "Backend for Emojigram web app",
   "private": true,
   "scripts": {

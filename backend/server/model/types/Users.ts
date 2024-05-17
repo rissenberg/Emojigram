@@ -1,9 +1,8 @@
 export interface IUserResponse {
 	user: {
-		id: number,
-		username: string,
+		id: string,
 		email: string,
-		avatar?: string,
+		avatar_url?: string,
 	}
 }
 

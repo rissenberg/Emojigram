@@ -1,48 +1,55 @@
 import { DB_MOCK } from '../db/mock_db';
 import { InnerResponse } from '../model/types/InnerResponse';
-import { IChatResponse, ICreateChatRequest } from '../model/types/Chats';
+import { IChatCreateResponse, IChatResponse, IChatsListResponse, ICreateChatRequest } from '../model/types/Chats';
 import { IMessageResponse } from '../model/types/Messages';
-import { IChatUserList } from '../model/types/Users';
+import { IChatsDB } from '../db/types';
 
 const DB = DB_MOCK;
 
 export class ChatsRepository {
-	getAllUsersChats = (userID: number): InnerResponse => {
+	getAllUsersChats = (username: string): InnerResponse => {
 		try {
-			const chatsIDs: number[] = [];
-			DB.users_chats.forEach((item) => {
-				if (item.user_id === userID)
-					chatsIDs.push(item.chat_id);
-			});
+			const currentUser = DB.users.get(username);
+			if (!currentUser) {
+				return {
+					status: 404,
+					error: 'Current user is not found'
+				};
+			}
 
-			const chats = chatsIDs.map(chatID => {
+			const chats: IChatsDB[] = [];
+
+			currentUser.chat_ids.forEach(chatID => {
 				const chat = DB.chats.get(chatID);
 
-				let last_message: IMessageResponse | null = null;
-				DB.messages.forEach(msg => {
-					if (msg.chat_id === chatID)
-						last_message = {
-							id: msg.id,
-							content: msg.content,
-							sent_at: msg.sent_at,
-							author_id: msg.author_id
-						};
-				});
+				if (chat && !chat.deleted)
+					chats.push(chat);
+			});
 
-				return chat && {
-					id: chat.id,
-					name: chat.name,
-					avatar: chat.avatar,
-					type: chat.type,
-					last_message,
-				};
-			}).filter(chat => chat !== undefined);
+			const response: IChatsListResponse = {
+				chats: chats.map(chat => {
+					const lastMessageDB = Array.from(DB.messages.values())
+						.findLast(msg => msg.receiver_id === chat._id && !msg.deleted);
+
+					const last_message = lastMessageDB ?
+						{
+							sender_id: lastMessageDB.sender_id,
+							sent_at: lastMessageDB.sent_at,
+							content: lastMessageDB.content,
+						} : null;
+
+					return ({
+						id: chat._id,
+						name: chat.name,
+						avatar_url: chat.avatar_url,
+						last_message,
+					});
+				})
+			};
 
 			return {
 				status: 200,
-				data: {
-					chats
-				},
+				data: response
 			};
 		}
 		catch (error) {
@@ -60,37 +67,34 @@ export class ChatsRepository {
 			if (!chatDB) {
 				return {
 					status: 404,
-					error: 'Chat was not found',
+					error: 'Chat is not found',
 				};
 			}
 
-			const users: IChatUserList[] = [];
-			DB.users_chats.forEach((item) => {
-				if (item.chat_id === chatID)
-					users.push({
-						id: item.user_id,
-						role: item.role
-					});
-			});
-
 			const messages: IMessageResponse[] = [];
 			DB.messages.forEach((msg) => {
-				if (msg.chat_id === chatID)
+				if (msg.receiver_id === chatID)
 					messages.push({
-						id: msg.id,
+						id: msg._id,
 						content: msg.content,
 						sent_at: msg.sent_at,
-						author_id: msg.author_id
+						sender_id: msg.sender_id
 					});
 			});
 
 			const response: IChatResponse = {
 				chat: {
-					id: chatDB.id,
+					id: chatDB._id,
 					name: chatDB.name,
-					avatar: chatDB.avatar,
-					type: chatDB.type,
-					users,
+					avatar_url: chatDB.avatar_url,
+					created: chatDB.created,
+					users: chatDB.user_ids.map(item => {
+						const user = DB.users.get(item.id);
+						return ({
+							...item,
+							avatar_url: user?.avatar_url,
+						});
+					})
 				},
 				messages: messages.reverse(),
 			};
@@ -108,36 +112,35 @@ export class ChatsRepository {
 		}
 	};
 
-	createChat = (chat: ICreateChatRequest, authorID: number): InnerResponse => {
+	createChat = (chat: ICreateChatRequest, authorID: string): InnerResponse => {
 		try {
 			const newChatID = DB.chats.size + 1;
 			DB.chats.set(
 				newChatID,
 				{
-					id: newChatID,
+					_id: newChatID,
 					name: chat.name,
-					avatar: chat.avatar,
-					type: 'group',
-					created_at: new Date(),
+					avatar_url: chat.avatar_url,
+					created: new Date(),
+					deleted: false,
+					user_ids: [
+						{
+							id: authorID,
+							role: 'admin',
+							joined_at: new Date(),
+							removed: false,
+						}
+					]
 				}
 			);
 
-			DB.users_chats.set(
-				DB.users_chats.size + 1,
-				{
-					id: DB.users_chats.size + 1,
-					user_id: authorID,
-					chat_id: newChatID,
-					role: 'admin',
-					joined_at: new Date(),
-				}
-			);
+			DB.users.get(authorID)?.chat_ids.push(newChatID);
 
 			return {
 				status: 200,
 				data: {
 					chatID: newChatID,
-				},
+				}
 			};
 		}
 		catch (error) {

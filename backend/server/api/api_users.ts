@@ -12,7 +12,7 @@ export class UsersAPI {
 	getUserByID = (req: Request, res: Response) => {
 		console.log(req.method, req.url);
 
-		const userID = parseInt(req.params.id);
+		const userID = req.params.id;
 		const response = this.UsersService.getUserByID(userID);
 
 		if (response.status === 200)

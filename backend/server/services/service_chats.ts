@@ -11,7 +11,7 @@ export class ChatsService {
 		this.ChatsRepository = new ChatsRepository();
 	}
 
-	getUsersChatsList = (userID: number): InnerResponse => {
+	getUsersChatsList = (userID: string): InnerResponse => {
 		try {
 			return this.ChatsRepository.getAllUsersChats(userID);
 		}
@@ -23,7 +23,7 @@ export class ChatsService {
 		}
 	};
 
-	getChatByID = (chatID: number, currentUserID: number): InnerResponse => {
+	getChatByID = (chatID: number, currentUserID: string): InnerResponse => {
 		try {
 			const response = this.ChatsRepository.getChatByID(chatID);
 
@@ -46,7 +46,7 @@ export class ChatsService {
 		}
 	};
 
-	createChat = (chat: ICreateChatRequest, authorID: number): InnerResponse => {
+	createChat = (chat: ICreateChatRequest, authorID: string): InnerResponse => {
 		try {
 			const response = this.ChatsRepository.createChat(chat, authorID);
 

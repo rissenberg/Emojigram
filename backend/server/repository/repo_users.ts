@@ -5,22 +5,21 @@ import { IUserResponse } from '../model/types/Users';
 const DB = DB_MOCK;
 
 export class UsersRepository {
-	getUserByID = (userID: number): InnerResponse => {
+	getUserByID = (userID: string): InnerResponse => {
 		try {
 			const userDB = DB.users.get(userID);
 
 			if (!userDB)
 				return {
 					status: 404,
-					error: 'User was not found',
+					error: 'User is not found',
 				};
 
 			const response: IUserResponse = {
 				user: {
-					id: userDB.id,
-					username: userDB.username,
+					id: userDB._id,
 					email: userDB.email,
-					avatar: userDB.avatar,
+					avatar_url: userDB.avatar_url,
 				}
 			};
 

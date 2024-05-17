@@ -9,7 +9,7 @@ export class UsersService {
 		this.UsersRepository = new UsersRepository();
 	}
 
-	getUserByID = (userID: number): InnerResponse => {
+	getUserByID = (userID: string): InnerResponse => {
 		try {
 			return this.UsersRepository.getUserByID(userID);
 		}
