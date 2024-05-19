@@ -4,7 +4,7 @@
 
 > https://dbdiagram.io/d/Emojigram-DB-6647a507f84ecd1d227be3a6
 
-![image](https://github.com/rissenberg/Emojigram/assets/114286666/c8d508f6-3d5e-484a-8e21-097634fe3c51)
+![image](https://github.com/rissenberg/Emojigram/assets/114286666/082c5069-4fe4-4109-9c39-8e29ce26e0e8)
 
 ## Физическая База Данных
 
