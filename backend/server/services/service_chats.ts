@@ -11,9 +11,9 @@ export class ChatsService {
 		this.ChatsRepository = new ChatsRepository();
 	}
 
-	getUsersChatsList = async (userID: string): Promise<InnerResponse> => {
+	getUsersChatsList = async (currentUser: string): Promise<InnerResponse> => {
 		try {
-			return await this.ChatsRepository.getAllUsersChats(userID);
+			return await this.ChatsRepository.getAllUsersChats(currentUser);
 		} catch (error) {
 			return {
 				status: 500,
@@ -26,13 +26,14 @@ export class ChatsService {
 		try {
 			const response = await this.ChatsRepository.getChatByID(chatID);
 
-			if (response.status === 200 && !response.data.chat.users
-				.map((user: IChatUsersList) => user.username)
-				.includes(currentUser)) {
-				return ({
-					status: 403,
-					error: 'User is not in the chat',
-				});
+			if (response.status === 200) {
+				const user = response.data.chat.users
+					.find((user: IChatUsersList) => user.username === currentUser);
+				if (!user || user.removed)
+					return ({
+						status: 403,
+						error: 'User is not in the chat',
+					});
 			}
 
 			return response;
@@ -52,6 +53,78 @@ export class ChatsService {
 				return this.ChatsRepository.getChatByID(response.data.chatID);
 			else
 				return response;
+		} catch (error) {
+			return {
+				status: 500,
+				error: `Chats service error: ${String(error)}`,
+			};
+		}
+	};
+
+	addToChat = async (chatID: string, username: string, currentUser: string): Promise<InnerResponse> => {
+		try {
+			const chatReq = await this.ChatsRepository.getChatByID(chatID);
+
+			if (chatReq.status !== 200)
+				return chatReq;
+
+			const currentUserInChat = chatReq.data.chat.users
+				.find((user: IChatUsersList) => user.username === currentUser);
+
+			if (!currentUserInChat || currentUserInChat.removed)
+				return {
+					status: 403,
+					error: 'Current user is not in the chat'
+				};
+
+			if (currentUserInChat.role !== 'admin')
+				return {
+					status: 403,
+					error: 'Current user is not admin'
+				};
+
+			const userInChat = chatReq.data.chat.users
+				.find((user: IChatUsersList) => user.username === username);
+
+			if (userInChat && !userInChat.removed)
+				return {
+					status: 200,
+				};
+
+			return await this.ChatsRepository.addToChat(chatID, username);
+
+		} catch (error) {
+			return {
+				status: 500,
+				error: `Chats service error: ${String(error)}`,
+			};
+		}
+	};
+
+	removeFromChat = async (chatID: string, username: string, currentUser: string): Promise<InnerResponse> => {
+		try {
+			const chatReq = await this.ChatsRepository.getChatByID(chatID);
+
+			if (chatReq.status !== 200)
+				return chatReq;
+
+			const currentUserInChat: IChatUsersList | undefined = chatReq.data.chat.users
+				.find((user: IChatUsersList) => user.username === currentUser);
+
+			if (!currentUserInChat || currentUserInChat.removed )
+				return {
+					status: 403,
+					error: 'Current user is not in the chat'
+				};
+
+			if (currentUserInChat.role !== 'admin' && currentUser !== username)
+				return {
+					status: 403,
+					error: 'Current user is not admin'
+				};
+
+			return await this.ChatsRepository.removeFromChat(chatID, username);
+
 		} catch (error) {
 			return {
 				status: 500,

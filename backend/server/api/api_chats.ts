@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { ChatsService } from '../services/service_chats';
 import { createChatValidator } from '../model/validators/ChatValidators';
+import { addUserToChatValidators } from '../model/validators/AddUserToChatValidators';
 
 // TODO delete MOCK
-const username = 'Yanka';
+const currentUser = 'Yanka';
 
 export class ChatsAPI {
 	ChatsService: ChatsService;
@@ -15,7 +16,7 @@ export class ChatsAPI {
 	getUsersChatsList = async (req: Request, res: Response) => {
 		console.log(req.method, req.url);
 
-		const response = await this.ChatsService.getUsersChatsList(username);
+		const response = await this.ChatsService.getUsersChatsList(currentUser);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);
@@ -29,7 +30,7 @@ export class ChatsAPI {
 		console.log(req.method, req.url);
 
 		const chatID = req.params.id;
-		const response = await this.ChatsService.getChatByID(chatID, username);
+		const response = await this.ChatsService.getChatByID(chatID, currentUser);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);
@@ -48,7 +49,49 @@ export class ChatsAPI {
 				error: 'Invalid request body',
 			});
 
-		const response = await this.ChatsService.createChat(chat, username);
+		const response = await this.ChatsService.createChat(chat, currentUser);
+
+		if (response.status === 200)
+			return res.status(200).json(response.data);
+		else
+			return res.status(response.status).json({
+				error: response.error,
+			});
+	};
+
+	addToChat = async (req: Request, res: Response) => {
+		console.log(req.method, req.url);
+
+		const chatID = req.params.id;
+
+		const body = req.body;
+		if (!addUserToChatValidators(body))
+			return res.status(400).json({
+				error: 'Invalid request body',
+			});
+
+		const response = await this.ChatsService.addToChat(chatID, body.username, currentUser);
+
+		if (response.status === 200)
+			return res.status(200).json(response.data);
+		else
+			return res.status(response.status).json({
+				error: response.error,
+			});
+	};
+
+	removeFromChat = async (req: Request, res: Response) => {
+		console.log(req.method, req.url);
+
+		const chatID = req.params.id;
+
+		const body = req.body;
+		if (!addUserToChatValidators(body))
+			return res.status(400).json({
+				error: 'Invalid request body',
+			});
+
+		const response = await this.ChatsService.removeFromChat(chatID, body.username, currentUser);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);

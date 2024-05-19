@@ -12,6 +12,8 @@ export interface IChatsListItem {
 	} | null
 }
 
+// Response Body
+
 export interface IChatsListResponse {
 	chats: IChatsListItem[]
 }
@@ -27,7 +29,13 @@ export interface IChatResponse {
 	messages: IMessageResponse[],
 }
 
+// Request Body
+
 export interface ICreateChatRequest {
 	name: string,
 	avatar?: string
+}
+
+export interface IAddUserToChatRequest {
+	username: string
 }
