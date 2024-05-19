@@ -28,7 +28,7 @@ export class UsersRepository {
 		try {
 			const userDB = await usersCollection.findOne({ username: username });
 
-			if (!userDB)
+			if (!userDB || userDB.deleted)
 				return {
 					status: 404,
 					error: 'User is not found',
@@ -74,7 +74,13 @@ export class UsersRepository {
 					}
 				};
 
-			const usersDB = await usersCollection.find({ username: { '$regex' : username, '$options' : 'i' } }).toArray();
+			const usersDB = await usersCollection
+				.find({ '$and': [
+					{ username: { '$regex' : username, '$options' : 'i' } },
+					{ deleted: false }
+				] })
+				.limit(50)
+				.toArray();
 
 			const response: IUserListResponse = {
 				users: usersDB.map(user => ({

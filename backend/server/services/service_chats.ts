@@ -34,7 +34,7 @@ export class ChatsService {
 				if (!user || user.removed)
 					return ({
 						status: 403,
-						error: 'User is not in the chat',
+						error: 'Current user is not in the chat',
 					});
 			}
 

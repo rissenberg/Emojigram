@@ -104,7 +104,7 @@ export class ChatsRepository {
 		try {
 			const chatDB = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
 
-			if (!chatDB) {
+			if (!chatDB || chatDB.deleted) {
 				return {
 					status: 404,
 					error: 'Chat is not found',
@@ -114,6 +114,7 @@ export class ChatsRepository {
 			const messages: IMessageResponse[] = (await messagesCollection
 				.find({ receiver_id: chatID })
 				.sort({ sent_at: -1 })
+				.limit(250)
 				.toArray())
 				.map(msg => ({
 					id: msg._id.toString(),
@@ -168,7 +169,7 @@ export class ChatsRepository {
 		try {
 			const chatDB = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
 
-			if (!chatDB) {
+			if (!chatDB || chatDB.deleted) {
 				return {
 					status: 404,
 					error: 'Chat is not found',
@@ -258,7 +259,7 @@ export class ChatsRepository {
 		try {
 			const user = await usersCollection.findOne({ username: username });
 
-			if (!user)
+			if (!user || user.deleted)
 				return {
 					status: 404,
 					error: 'User is not found'

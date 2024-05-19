@@ -1,4 +1,4 @@
-export const addUserToChatValidators = (body: any) => {
+export const userValidators = (body: any) => {
 	if (!body.username)
 		return false;
 	else if (typeof body?.username !== 'string')
