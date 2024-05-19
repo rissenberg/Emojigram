@@ -1,13 +1,32 @@
-import { DB_MOCK } from '../db/mock_db';
 import { InnerResponse } from '../model/types/InnerResponse';
 import { IUserResponse } from '../model/types/Users';
+import { MongoDB } from '../db/mongoDB';
+import { IUserDoc } from '../db/types';
 
-const DB = DB_MOCK;
 
 export class UsersRepository {
-	getUserByID = (userID: string): InnerResponse => {
+	Database: MongoDB;
+
+	constructor() {
+		this.Database = new MongoDB();
+
+		this.Database.connect()
+			.catch(err => {
+				console.log(`Error during DB connection: ${err}`);
+			});
+	}
+
+	getUserByID = async (username: string): Promise<InnerResponse> => {
+		const usersCollection = this.Database.getCollection<IUserDoc>('users');
+
+		if (!usersCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
 		try {
-			const userDB = DB.users.get(userID);
+			const userDB = await usersCollection.findOne({ username: username });
 
 			if (!userDB)
 				return {
@@ -17,7 +36,8 @@ export class UsersRepository {
 
 			const response: IUserResponse = {
 				user: {
-					id: userDB._id,
+					id: userDB._id.toString(),
+					username: userDB.username,
 					email: userDB.email,
 					avatar_url: userDB.avatar_url,
 				}

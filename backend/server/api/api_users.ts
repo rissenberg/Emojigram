@@ -9,11 +9,11 @@ export class UsersAPI {
 		this.UsersService = new UsersService();
 	}
 
-	getUserByID = (req: Request, res: Response) => {
+	getUserByID = async (req: Request, res: Response) => {
 		console.log(req.method, req.url);
 
 		const userID = req.params.id;
-		const response = this.UsersService.getUserByID(userID);
+		const response = await this.UsersService.getUserByID(userID);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);

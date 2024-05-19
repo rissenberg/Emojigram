@@ -3,7 +3,7 @@ import { ChatsService } from '../services/service_chats';
 import { createChatValidator } from '../model/validators/ChatValidators';
 
 // TODO delete MOCK
-const userID = 'Yanka';
+const username = 'Yanka';
 
 export class ChatsAPI {
 	ChatsService: ChatsService;
@@ -12,10 +12,10 @@ export class ChatsAPI {
 		this.ChatsService = new ChatsService();
 	}
 
-	getUsersChatsList = (req: Request, res: Response) => {
+	getUsersChatsList = async (req: Request, res: Response) => {
 		console.log(req.method, req.url);
 
-		const response = this.ChatsService.getUsersChatsList(userID);
+		const response = await this.ChatsService.getUsersChatsList(username);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);
@@ -25,11 +25,11 @@ export class ChatsAPI {
 			});
 	};
 
-	getChatByID = (req: Request, res: Response) => {
+	getChatByID = async (req: Request, res: Response) => {
 		console.log(req.method, req.url);
 
-		const chatID = parseInt(req.params.id);
-		const response = this.ChatsService.getChatByID(chatID, userID);
+		const chatID = req.params.id;
+		const response = await this.ChatsService.getChatByID(chatID, username);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);
@@ -39,7 +39,7 @@ export class ChatsAPI {
 			});
 	};
 
-	createChat = (req: Request, res: Response) => {
+	createChat = async (req: Request, res: Response) => {
 		console.log(req.method, req.url);
 
 		const chat = req.body;
@@ -48,7 +48,7 @@ export class ChatsAPI {
 				error: 'Invalid request body',
 			});
 
-		const response = this.ChatsService.createChat(chat, userID);
+		const response = await this.ChatsService.createChat(chat, username);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);

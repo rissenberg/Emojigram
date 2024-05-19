@@ -1,5 +1,5 @@
 export interface IMessageResponse {
-	id: number,
+	id: string,
 	sender_id: string,
 	content: string,
 	sent_at: Date,

@@ -9,9 +9,9 @@ export class UsersService {
 		this.UsersRepository = new UsersRepository();
 	}
 
-	getUserByID = (userID: string): InnerResponse => {
+	getUserByID = async (userID: string): Promise<InnerResponse> => {
 		try {
-			return this.UsersRepository.getUserByID(userID);
+			return await this.UsersRepository.getUserByID(userID);
 		}
 		catch (error) {
 			return {

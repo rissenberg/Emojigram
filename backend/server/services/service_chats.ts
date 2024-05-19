@@ -1,6 +1,6 @@
 import { InnerResponse } from '../model/types/InnerResponse';
 import { ChatsRepository } from '../repository/repo_chats';
-import { IChatUserList } from '../model/types/Users';
+import { IChatUsersList } from '../model/types/Users';
 import { ICreateChatRequest } from '../model/types/Chats';
 
 
@@ -11,11 +11,10 @@ export class ChatsService {
 		this.ChatsRepository = new ChatsRepository();
 	}
 
-	getUsersChatsList = (userID: string): InnerResponse => {
+	getUsersChatsList = async (userID: string): Promise<InnerResponse> => {
 		try {
-			return this.ChatsRepository.getAllUsersChats(userID);
-		}
-		catch (error) {
+			return await this.ChatsRepository.getAllUsersChats(userID);
+		} catch (error) {
 			return {
 				status: 500,
 				error: `Chats service error: ${String(error)}`,
@@ -23,22 +22,21 @@ export class ChatsService {
 		}
 	};
 
-	getChatByID = (chatID: number, currentUserID: string): InnerResponse => {
+	getChatByID = async (chatID: string, currentUser: string): Promise<InnerResponse> => {
 		try {
-			const response = this.ChatsRepository.getChatByID(chatID);
+			const response = await this.ChatsRepository.getChatByID(chatID);
 
 			if (response.status === 200 && !response.data.chat.users
-				.map((user: IChatUserList) => user.id)
-				.includes(currentUserID)) {
+				.map((user: IChatUsersList) => user.username)
+				.includes(currentUser)) {
 				return ({
 					status: 403,
-					error: 'Chats service error: User is not in the chat',
+					error: 'User is not in the chat',
 				});
 			}
 
 			return response;
-		}
-		catch (error) {
+		} catch (error) {
 			return {
 				status: 500,
 				error: `Chats service error: ${String(error)}`,
@@ -46,16 +44,15 @@ export class ChatsService {
 		}
 	};
 
-	createChat = (chat: ICreateChatRequest, authorID: string): InnerResponse => {
+	createChat = async (chat: ICreateChatRequest, authorUsername: string): Promise<InnerResponse> => {
 		try {
-			const response = this.ChatsRepository.createChat(chat, authorID);
+			const response = await this.ChatsRepository.createChat(chat, authorUsername);
 
 			if (response.status === 200)
 				return this.ChatsRepository.getChatByID(response.data.chatID);
 			else
 				return response;
-		}
-		catch (error) {
+		} catch (error) {
 			return {
 				status: 500,
 				error: `Chats service error: ${String(error)}`,

@@ -1,31 +1,34 @@
-export interface IChatsDB {
-	_id: number,
+import { ObjectId } from 'mongodb';
+
+export interface IChatDoc {
+	_id?: ObjectId,
 	name: string,
 	created: Date,
 	avatar_url?: string,
 	deleted: boolean,
-	user_ids: {
-		id: string,
+	users: {
+		username: string,
 		role: 'default' | 'admin',
 		joined_at: Date,
 		removed: boolean
 	}[]
 }
 
-export interface IUsersDB {
-	_id: string,
+export interface IUserDoc {
+	_id?: ObjectId,
+	username: string,
 	email: string,
 	password: string,
 	created: Date,
 	avatar_url?: string,
 	deleted: boolean,
-	chat_ids: number[]
+	chat_ids: string[]
 }
 
-export interface IMessagesDB {
-	_id: number,
+export interface IMessageDoc {
+	_id?: ObjectId,
 	sender_id: string,
-	receiver_id: string | number,
+	receiver_id: string,
 	sent_at: Date,
 	content: string,
 	deleted: boolean

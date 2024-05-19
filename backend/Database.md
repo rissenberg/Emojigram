@@ -14,18 +14,19 @@
 ```ts
 {
     "_id": string,
+    "username": string,
     "email": string,
     "password": string,
     "created": Date,
     "avatar_url": string,
     "deleted": boolean,
-    "chat_ids": number[]
+    "chat_ids": string[]
 }
 ```
 ### Sessions Collection
 ```ts
 {
-    "_id": number,
+    "_id": string,
     "token": string,
     "user_id": string
 }
@@ -33,13 +34,13 @@
 ### Chats Collection
 ```ts
 {
-    "_id": number,
+    "_id": string,
     "name": string,
     "created": Date,
     "avatar_url": string,
     "deleted": boolean,
     "users": {
-      "id": number,
+      "username": string,
       "role": "default" | "admin",
       "joined_at": Date,
       "removed": boolean
@@ -49,9 +50,9 @@
 ### Messages Collection
 ```ts
 {
-    "_id": number,
+    "_id": string,
     "sender_id": string,
-    "receiver_id": string | number,
+    "receiver_id": string,
     "sent_at": Date,
     "content": string,
     "deleted": boolean
