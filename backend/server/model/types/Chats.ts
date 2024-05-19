@@ -29,6 +29,25 @@ export interface IChatResponse {
 	messages: IMessageResponse[],
 }
 
+export interface ILightChatResponse {
+	chat: {
+		id: string,
+		name: string,
+		created: Date,
+		avatar_url?: string,
+		users: {
+			username: string,
+			role: 'default' | 'admin',
+			joined_at: Date,
+			removed: boolean
+		}[]
+	},
+}
+
+export interface ICreateChatResponse {
+	chatID: string,
+}
+
 // Request Body
 
 export interface ICreateChatRequest {

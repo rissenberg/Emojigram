@@ -1,7 +1,7 @@
 import { InnerResponse } from '../model/types/InnerResponse';
 import { ChatsRepository } from '../repository/repo_chats';
 import { IChatUsersList } from '../model/types/Users';
-import { ICreateChatRequest } from '../model/types/Chats';
+import { IChatResponse, IChatsListResponse, ICreateChatRequest } from '../model/types/Chats';
 
 
 export class ChatsService {
@@ -11,7 +11,8 @@ export class ChatsService {
 		this.ChatsRepository = new ChatsRepository();
 	}
 
-	getUsersChatsList = async (currentUser: string): Promise<InnerResponse> => {
+	getUsersChatsList = async (currentUser: string)
+		: Promise<InnerResponse<IChatsListResponse>> => {
 		try {
 			return await this.ChatsRepository.getAllUsersChats(currentUser);
 		} catch (error) {
@@ -22,12 +23,13 @@ export class ChatsService {
 		}
 	};
 
-	getChatByID = async (chatID: string, currentUser: string): Promise<InnerResponse> => {
+	getChatByID = async (chatID: string, currentUser: string)
+		: Promise<InnerResponse<IChatResponse>> => {
 		try {
 			const response = await this.ChatsRepository.getChatByID(chatID);
 
 			if (response.status === 200) {
-				const user = response.data.chat.users
+				const user = response.data!.chat.users
 					.find((user: IChatUsersList) => user.username === currentUser);
 				if (!user || user.removed)
 					return ({
@@ -45,14 +47,19 @@ export class ChatsService {
 		}
 	};
 
-	createChat = async (chat: ICreateChatRequest, authorUsername: string): Promise<InnerResponse> => {
+	createChat = async (chat: ICreateChatRequest, authorUsername: string)
+		: Promise<InnerResponse<IChatResponse>> => {
 		try {
 			const response = await this.ChatsRepository.createChat(chat, authorUsername);
 
 			if (response.status === 200)
-				return this.ChatsRepository.getChatByID(response.data.chatID);
+				return this.ChatsRepository.getChatByID(response.data!.chatID);
 			else
-				return response;
+				return {
+					status: response.status,
+					error: response.error
+				};
+
 		} catch (error) {
 			return {
 				status: 500,
@@ -61,14 +68,18 @@ export class ChatsService {
 		}
 	};
 
-	addToChat = async (chatID: string, username: string, currentUser: string): Promise<InnerResponse> => {
+	addToChat = async (chatID: string, username: string, currentUser: string)
+		: Promise<InnerResponse<null>> => {
 		try {
-			const chatReq = await this.ChatsRepository.getChatByID(chatID);
+			const chatReq = await this.ChatsRepository.getLightChatByID(chatID);
 
 			if (chatReq.status !== 200)
-				return chatReq;
+				return {
+					status: chatReq.status,
+					error: chatReq.error
+				};
 
-			const currentUserInChat = chatReq.data.chat.users
+			const currentUserInChat = chatReq.data!.chat.users
 				.find((user: IChatUsersList) => user.username === currentUser);
 
 			if (!currentUserInChat || currentUserInChat.removed)
@@ -83,7 +94,7 @@ export class ChatsService {
 					error: 'Current user is not admin'
 				};
 
-			const userInChat = chatReq.data.chat.users
+			const userInChat = chatReq.data!.chat.users
 				.find((user: IChatUsersList) => user.username === username);
 
 			if (userInChat && !userInChat.removed)
@@ -101,14 +112,18 @@ export class ChatsService {
 		}
 	};
 
-	removeFromChat = async (chatID: string, username: string, currentUser: string): Promise<InnerResponse> => {
+	removeFromChat = async (chatID: string, username: string, currentUser: string)
+		: Promise<InnerResponse<null>> => {
 		try {
-			const chatReq = await this.ChatsRepository.getChatByID(chatID);
+			const chatReq = await this.ChatsRepository.getLightChatByID(chatID);
 
 			if (chatReq.status !== 200)
-				return chatReq;
+				return {
+					status: chatReq.status,
+					error: chatReq.error
+				};
 
-			const currentUserInChat: IChatUsersList | undefined = chatReq.data.chat.users
+			const currentUserInChat: IChatUsersList | undefined = chatReq.data!.chat.users
 				.find((user: IChatUsersList) => user.username === currentUser);
 
 			if (!currentUserInChat || currentUserInChat.removed )

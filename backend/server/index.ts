@@ -32,7 +32,8 @@ app.post(`${API_PATH_PREFIX}/chats/:id/add`, chatsAPI.addToChat);
 app.post(`${API_PATH_PREFIX}/chats/:id/remove`, chatsAPI.removeFromChat);
 
 // User Service handlers
-app.get(`${API_PATH_PREFIX}/users/:id`, usersAPI.getUserByID);
+app.get(`${API_PATH_PREFIX}/users/search/:username`, usersAPI.searchByUsername);
+app.get(`${API_PATH_PREFIX}/users/:username`, usersAPI.getUserByID);
 
 app.use('*', (req, res) => {
 	return res.status(404).json('404 Path Not Found');

@@ -7,6 +7,15 @@ export interface IUserResponse {
 	}
 }
 
+export interface IUserListResponse {
+	users: {
+		id: string,
+		username: string,
+		email: string,
+		avatar_url?: string,
+	}[]
+}
+
 export interface IChatUsersList {
 	username: string,
 	avatar_url?: string,

@@ -3,7 +3,7 @@ import {
 	IChatResponse,
 	IChatsListItem,
 	IChatsListResponse,
-	ICreateChatRequest
+	ICreateChatRequest, ICreateChatResponse, ILightChatResponse
 } from '../model/types/Chats';
 import { IMessageResponse } from '../model/types/Messages';
 import { IChatDoc, IMessageDoc, IUserDoc } from '../db/types';
@@ -24,7 +24,8 @@ export class ChatsRepository {
 			});
 	}
 	
-	getAllUsersChats = async (username: string): Promise<InnerResponse> => {
+	getAllUsersChats = async (username: string)
+		: Promise<InnerResponse<IChatsListResponse>> => {
 		const usersCollection = this.Database.getCollection<IUserDoc>('users');
 		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
 		const messagesCollection = this.Database.getCollection<IMessageDoc>('messages');
@@ -88,7 +89,8 @@ export class ChatsRepository {
 		}
 	};
 
-	getChatByID = async (chatID: string): Promise<InnerResponse> => {
+	getChatByID = async (chatID: string)
+		: Promise<InnerResponse<IChatResponse>> => {
 		const usersCollection = this.Database.getCollection<IUserDoc>('users');
 		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
 		const messagesCollection = this.Database.getCollection<IMessageDoc>('messages');
@@ -153,7 +155,48 @@ export class ChatsRepository {
 		}
 	};
 
-	createChat = async (chat: ICreateChatRequest, authorUsername: string): Promise<InnerResponse> => {
+	getLightChatByID = async (chatID: string)
+		: Promise<InnerResponse<ILightChatResponse>> => {
+		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
+
+		if (!chatsCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
+		try {
+			const chatDB = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
+
+			if (!chatDB) {
+				return {
+					status: 404,
+					error: 'Chat is not found',
+				};
+			}
+
+			return {
+				status: 200,
+				data: {
+					chat: {
+						id: chatDB._id.toString(),
+						name: chatDB.name,
+						avatar_url: chatDB.avatar_url,
+						created: chatDB.created,
+						users: chatDB.users
+					}
+				}
+			};
+		} catch (error) {
+			return {
+				status: 500,
+				error: `Chats repository error: ${String(error)}`,
+			};
+		}
+	};
+
+	createChat = async (chat: ICreateChatRequest, authorUsername: string)
+		: Promise<InnerResponse<ICreateChatResponse>> => {
 		const usersCollection = this.Database.getCollection<IUserDoc>('users');
 		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
 
@@ -201,7 +244,8 @@ export class ChatsRepository {
 		}
 	};
 
-	addToChat = async (chatID: string, username: string): Promise<InnerResponse> => {
+	addToChat = async (chatID: string, username: string)
+		: Promise<InnerResponse<null>> => {
 		const usersCollection = this.Database.getCollection<IUserDoc>('users');
 		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
 
@@ -254,7 +298,8 @@ export class ChatsRepository {
 		}
 	};
 
-	removeFromChat = async (chatID: string, username: string): Promise<InnerResponse> => {
+	removeFromChat = async (chatID: string, username: string)
+		: Promise<InnerResponse<null>> => {
 		const usersCollection = this.Database.getCollection<IUserDoc>('users');
 		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
 

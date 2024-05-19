@@ -1,5 +1,5 @@
 import { InnerResponse } from '../model/types/InnerResponse';
-import { IUserResponse } from '../model/types/Users';
+import { IUserListResponse, IUserResponse } from '../model/types/Users';
 import { MongoDB } from '../db/mongoDB';
 import { IUserDoc } from '../db/types';
 
@@ -16,7 +16,7 @@ export class UsersRepository {
 			});
 	}
 
-	getUserByID = async (username: string): Promise<InnerResponse> => {
+	getUserByID = async (username: string): Promise<InnerResponse<IUserResponse>> => {
 		const usersCollection = this.Database.getCollection<IUserDoc>('users');
 
 		if (!usersCollection)
@@ -41,6 +41,48 @@ export class UsersRepository {
 					email: userDB.email,
 					avatar_url: userDB.avatar_url,
 				}
+			};
+
+			return {
+				status: 200,
+				data: response,
+			};
+		}
+		catch (error) {
+			return {
+				status: 500,
+				error: `Users repository error: ${String(error)}`,
+			};
+		}
+	};
+
+	searchByUsername = async (username: string): Promise<InnerResponse<IUserListResponse>> => {
+		const usersCollection = this.Database.getCollection<IUserDoc>('users');
+
+		if (!usersCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
+		try {
+			if (username === '')
+				return {
+					status: 200,
+					data: {
+						users: [],
+					}
+				};
+
+			const usersDB = await usersCollection.find({ username: { '$regex' : username, '$options' : 'i' } }).toArray();
+
+			const response: IUserListResponse = {
+				users: usersDB.map(user => ({
+					id: user._id.toString(),
+					username: user.username,
+					email: user.email,
+					avatar_url: user.avatar_url,
+				}))
 			};
 
 			return {
