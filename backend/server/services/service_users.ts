@@ -1,6 +1,8 @@
+import crypto from 'crypto';
 import { InnerResponse } from '../model/types/InnerResponse';
 import { UsersRepository } from '../repository/repo_users';
 import { IUserListResponse, IUserResponse, IUserSignup } from '../model/types/Users';
+import { PASSWORD_SECRET } from '../config/config';
 
 
 export class UsersService {
@@ -30,8 +32,13 @@ export class UsersService {
 
 			if (userRes.status !== 200)
 				return userRes;
-			
-			if (userRes.data?.user.password !== password)
+
+			const passwordHash = crypto
+				.createHmac('sha256', PASSWORD_SECRET)
+				.update(password)
+				.digest('hex');
+
+			if (userRes.data?.user.password !== passwordHash)
 				return {
 					status: 403,
 					error: 'Incorrect password'
@@ -74,6 +81,11 @@ export class UsersService {
 					status: 409,
 					error: 'This email is taken'
 				};
+
+			user.password = crypto
+				.createHmac('sha256', PASSWORD_SECRET)
+				.update(user.password)
+				.digest('hex');
 
 			return  await this.UsersRepository.createUser(user);
 
