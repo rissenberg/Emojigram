@@ -1,9 +1,8 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { Request as JWTRequest } from 'express-jwt';
 import { MessagesService } from '../services/service_messages';
 import { sendMessageValidator } from '../model/validators/MessageValidators';
 
-// TODO delete MOCK
-const currentUser = 'Yanka';
 
 export class MessagesAPI {
 	MessagesService: MessagesService;
@@ -12,8 +11,12 @@ export class MessagesAPI {
 		this.MessagesService = new MessagesService();
 	}
 
-	sendMessage = async (req: Request, res: Response) => {
+	sendMessage = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const message = req.body;
 		if (!sendMessageValidator(message))

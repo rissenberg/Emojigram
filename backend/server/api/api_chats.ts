@@ -1,10 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { Request as JWTRequest } from 'express-jwt';
 import { ChatsService } from '../services/service_chats';
 import { createChatValidator } from '../model/validators/ChatValidators';
 import { userValidator } from '../model/validators/UserValidator';
 
-// TODO delete MOCK
-const currentUser = 'Yanka';
 
 export class ChatsAPI {
 	ChatsService: ChatsService;
@@ -13,8 +12,12 @@ export class ChatsAPI {
 		this.ChatsService = new ChatsService();
 	}
 
-	getUsersChatsList = async (req: Request, res: Response) => {
+	getUsersChatsList = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const response = await this.ChatsService.getUsersChatsList(currentUser);
 
@@ -26,8 +29,12 @@ export class ChatsAPI {
 			});
 	};
 
-	getChatByID = async (req: Request, res: Response) => {
+	getChatByID = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const chatID = req.params.id;
 		const response = await this.ChatsService.getChatByID(chatID, currentUser);
@@ -40,8 +47,12 @@ export class ChatsAPI {
 			});
 	};
 
-	createChat = async (req: Request, res: Response) => {
+	createChat = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const chat = req.body;
 		if (!createChatValidator(chat))
@@ -59,8 +70,12 @@ export class ChatsAPI {
 			});
 	};
 
-	addToChat = async (req: Request, res: Response) => {
+	addToChat = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const chatID = req.params.id;
 
@@ -80,8 +95,12 @@ export class ChatsAPI {
 			});
 	};
 
-	removeFromChat = async (req: Request, res: Response) => {
+	removeFromChat = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const chatID = req.params.id;
 

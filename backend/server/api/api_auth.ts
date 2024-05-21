@@ -16,10 +16,8 @@ export class AuthAPI {
 	login = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
 
-		if (req.auth) {
-			res.status(403).json({ error: 'You have an active session - logout first' });
-			return;
-		}
+		if (req.auth)
+			return res.status(403).json({ error: 'You have an active session - logout first' });
 
 		const credentials = req.body;
 		if (!loginValidator(credentials))
@@ -30,12 +28,10 @@ export class AuthAPI {
 		const { login, password } = credentials;
 		const authCheck = await this.UsersService.checkUserPassword(login, password);
 
-		if (authCheck.status !== 200) {
-			res.status(authCheck.status).json({
+		if (authCheck.status !== 200)
+			return res.status(authCheck.status).json({
 				error: authCheck.error,
 			});
-			return;
-		}
 
 		const user = authCheck.data!.user;
 
@@ -52,10 +48,8 @@ export class AuthAPI {
 	signup = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
 
-		if (req.auth) {
-			res.status(403).json({ error: 'You have an active session - logout first' });
-			return;
-		}
+		if (req.auth)
+			return res.status(403).json({ error: 'You have an active session - logout first' });
 
 		const body = req.body;
 		if (!signupValidator(body))
@@ -65,12 +59,10 @@ export class AuthAPI {
 
 		const addUserRes = await this.UsersService.createUser(body);
 
-		if (addUserRes.status !== 200) {
-			res.status(addUserRes.status).json({
+		if (addUserRes.status !== 200)
+			return res.status(addUserRes.status).json({
 				error: addUserRes.error,
 			});
-			return;
-		}
 
 		const user = addUserRes.data!.user;
 
@@ -90,12 +82,10 @@ export class AuthAPI {
 		const username = req.auth?.username;
 		const authUser = await this.UsersService.getByUsername(username);
 
-		if (authUser.status !== 200) {
-			res.status(authUser.status).json({
+		if (authUser.status !== 200)
+			return res.status(authUser.status).json({
 				error: authUser.error,
 			});
-			return;
-		}
 
 		const user = authUser.data!.user;
 

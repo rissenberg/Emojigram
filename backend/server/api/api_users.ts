@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { Request as JWTRequest } from 'express-jwt';
 import { UsersService } from '../services/service_users';
 
-// TODO delete MOCK
-const currentUser = 'Yanka';
 
 export class UsersAPI {
 	UsersService: UsersService;
@@ -11,7 +10,7 @@ export class UsersAPI {
 		this.UsersService = new UsersService();
 	}
 
-	getUserByID = async (req: Request, res: Response) => {
+	getUserByID = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
 
 		const username = req.params.username;
@@ -25,8 +24,12 @@ export class UsersAPI {
 			});
 	};
 
-	searchByUsername = async (req: Request, res: Response) => {
+	searchByUsername = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const username = req.params.username;
 		const response = await this.UsersService.searchByUsername(username, currentUser);

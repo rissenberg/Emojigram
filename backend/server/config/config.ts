@@ -14,9 +14,11 @@ export const DB_NAME = 'Emojigram';
 
 export const JWT_SECRET = 'SECRET';
 
-export const JWT_EXPIRATION = '2m';
+export const JWT_EXPIRATION = '2h';
 
 export const ALLOWED_ORIGINS = [
 	'http://localhost:3000',
 	'https://localhost:3000'
 ];
+
+export const PASSWORD_SECRET = 'SECRET';
