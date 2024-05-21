@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import { InnerResponse } from '../model/types/InnerResponse';
 import { UsersRepository } from '../repository/repo_users';
 import { IUserListResponse, IUserResponse, IUserSignup } from '../model/types/Users';
-import { PASSWORD_SECRET } from '../config/config';
+import { PASSWORD_SECRET } from '../config/security_conf';
 
 
 export class UsersService {

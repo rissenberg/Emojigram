@@ -1,5 +1,5 @@
 import { Db, MongoClient, ObjectId } from 'mongodb';
-import { DB_NAME, MONGODB_URL } from '../config/config';
+import { DB_NAME, MONGODB_URL } from '../config/database_conf';
 
 export class MongoDB {
 	client: MongoClient;

@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import { UsersService } from '../services/service_users';
 import { IAuthUserResponse } from '../model/types/Users';
 import { loginValidator, signupValidator } from '../model/validators/AuthValidators';
-import { JWT_EXPIRATION, JWT_SECRET } from '../config/config';
+import { JWT_EXPIRATION, JWT_SECRET } from '../config/security_conf';
 
 export class AuthAPI {
 	UsersService: UsersService;

@@ -2,11 +2,8 @@ import express, { Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import { expressjwt, UnauthorizedError, Request as JWTRequest } from 'express-jwt';
-import {
-	ALLOWED_ORIGINS,
-	API_PATH_PREFIX, JWT_SECRET,
-	SERVER_PORT
-} from './config/config';
+import { ALLOWED_ORIGINS, JWT_SECRET } from './config/security_conf';
+import { API_PATH_PREFIX, SERVER_PORT } from './config/server_conf';
 import { ChatsAPI } from './api/api_chats';
 import { UsersAPI } from './api/api_users';
 import { MessagesAPI } from './api/api_messages';
