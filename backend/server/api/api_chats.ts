@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { Request as JWTRequest } from 'express-jwt';
 import { ChatsService } from '../services/service_chats';
 import { createChatValidator } from '../model/validators/ChatValidators';
+import { userValidator } from '../model/validators/UserValidator';
 
-// TODO delete MOCK
-const userID = 1;
 
 export class ChatsAPI {
 	ChatsService: ChatsService;
@@ -12,10 +12,14 @@ export class ChatsAPI {
 		this.ChatsService = new ChatsService();
 	}
 
-	getUsersChatsList = (req: Request, res: Response) => {
+	getUsersChatsList = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
 
-		const response = this.ChatsService.getUsersChatsList(userID);
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
+
+		const response = await this.ChatsService.getUsersChatsList(currentUser);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);
@@ -25,11 +29,15 @@ export class ChatsAPI {
 			});
 	};
 
-	getChatByID = (req: Request, res: Response) => {
+	getChatByID = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
 
-		const chatID = parseInt(req.params.id);
-		const response = this.ChatsService.getChatByID(chatID, userID);
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
+
+		const chatID = req.params.id;
+		const response = await this.ChatsService.getChatByID(chatID, currentUser);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);
@@ -39,8 +47,12 @@ export class ChatsAPI {
 			});
 	};
 
-	createChat = (req: Request, res: Response) => {
+	createChat = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
 
 		const chat = req.body;
 		if (!createChatValidator(chat))
@@ -48,7 +60,57 @@ export class ChatsAPI {
 				error: 'Invalid request body',
 			});
 
-		const response = this.ChatsService.createChat(chat, userID);
+		const response = await this.ChatsService.createChat(chat, currentUser);
+
+		if (response.status === 200)
+			return res.status(200).json(response.data);
+		else
+			return res.status(response.status).json({
+				error: response.error,
+			});
+	};
+
+	addToChat = async (req: JWTRequest, res: Response) => {
+		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
+
+		const chatID = req.params.id;
+
+		const body = req.body;
+		if (!userValidator(body))
+			return res.status(400).json({
+				error: 'Invalid request body',
+			});
+
+		const response = await this.ChatsService.addToChat(chatID, body.username, currentUser);
+
+		if (response.status === 200)
+			return res.status(200).json(response.data);
+		else
+			return res.status(response.status).json({
+				error: response.error,
+			});
+	};
+
+	removeFromChat = async (req: JWTRequest, res: Response) => {
+		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
+
+		const chatID = req.params.id;
+
+		const body = req.body;
+		if (!userValidator(body))
+			return res.status(400).json({
+				error: 'Invalid request body',
+			});
+
+		const response = await this.ChatsService.removeFromChat(chatID, body.username, currentUser);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);

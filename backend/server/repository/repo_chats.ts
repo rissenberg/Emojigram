@@ -1,51 +1,87 @@
-import { DB_MOCK } from '../db/mock_db';
 import { InnerResponse } from '../model/types/InnerResponse';
-import { IChatResponse, ICreateChatRequest } from '../model/types/Chats';
+import {
+	IChatResponse,
+	IChatsListItem,
+	IChatsListResponse,
+	ICreateChatRequest, ICreateChatResponse, ILightChatResponse
+} from '../model/types/Chats';
 import { IMessageResponse } from '../model/types/Messages';
-import { IChatUserList } from '../model/types/Users';
+import { IChatDoc, IMessageDoc, IUserDoc } from '../db/types';
+import { MongoDB } from '../db/mongoDB';
+import { ObjectId } from 'mongodb';
+import { IChatUsersList } from '../model/types/Users';
 
-const DB = DB_MOCK;
 
 export class ChatsRepository {
-	getAllUsersChats = (userID: number): InnerResponse => {
-		try {
-			const chatsIDs: number[] = [];
-			DB.users_chats.forEach((item) => {
-				if (item.user_id === userID)
-					chatsIDs.push(item.chat_id);
+	Database: MongoDB;
+
+	constructor() {
+		this.Database = new MongoDB();
+
+		this.Database.connect()
+			.catch(err => {
+				console.log(`Error during DB connection: ${err}`);
 			});
+	}
+	
+	getAllUsersChats = async (username: string)
+		: Promise<InnerResponse<IChatsListResponse>> => {
+		const usersCollection = this.Database.getCollection<IUserDoc>('users');
+		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
+		const messagesCollection = this.Database.getCollection<IMessageDoc>('messages');
 
-			const chats = chatsIDs.map(chatID => {
-				const chat = DB.chats.get(chatID);
+		if (!usersCollection || !chatsCollection || !messagesCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
 
-				let last_message: IMessageResponse | null = null;
-				DB.messages.forEach(msg => {
-					if (msg.chat_id === chatID)
-						last_message = {
-							id: msg.id,
-							content: msg.content,
-							sent_at: msg.sent_at,
-							author_id: msg.author_id
-						};
-				});
+		try {
+			const currentUser = await usersCollection.findOne({ username: username });
 
-				return chat && {
-					id: chat.id,
-					name: chat.name,
-					avatar: chat.avatar,
-					type: chat.type,
-					last_message,
+			if (!currentUser)
+				return {
+					status: 404,
+					error: 'Current auth user is not found'
 				};
-			}).filter(chat => chat !== undefined);
+
+			const chats: IChatsListItem[] = [];
+
+			for (const chatID of currentUser.chat_ids) {
+				const chat = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
+
+				if (chat && !chat.deleted){
+					const lastMessageDB = await messagesCollection
+						.find({ $and: [{ receiver_id: chat._id.toString() }, { deleted: false }] })
+						.sort({ sent_at: -1 })
+						.limit(1)
+						.toArray();
+
+					const last_message = lastMessageDB[0] ?
+						{
+							sender_id: lastMessageDB[0].sender_id.toString(),
+							sent_at: lastMessageDB[0].sent_at,
+							content: lastMessageDB[0].content,
+						} : null;
+
+					chats.push({
+						id: chat._id.toString(),
+						name: chat.name,
+						avatar_url: chat.avatar_url,
+						last_message,
+					});
+				}
+			}
+
+			const response: IChatsListResponse = {
+				chats
+			};
 
 			return {
 				status: 200,
-				data: {
-					chats
-				},
+				data: response
 			};
-		}
-		catch (error) {
+		} catch (error) {
 			return {
 				status: 500,
 				error: `Chats repository error: ${String(error)}`,
@@ -53,52 +89,153 @@ export class ChatsRepository {
 		}
 	};
 
-	getChatByID = (chatID: number): InnerResponse => {
-		try {
-			const chatDB = DB.chats.get(chatID);
+	getChatByID = async (chatID: string)
+		: Promise<InnerResponse<IChatResponse>> => {
+		const usersCollection = this.Database.getCollection<IUserDoc>('users');
+		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
+		const messagesCollection = this.Database.getCollection<IMessageDoc>('messages');
 
-			if (!chatDB) {
+		if (!usersCollection || !chatsCollection || !messagesCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
+		try {
+			const chatDB = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
+
+			if (!chatDB || chatDB.deleted) {
 				return {
 					status: 404,
-					error: 'Chat was not found',
+					error: 'Chat is not found',
 				};
 			}
 
-			const users: IChatUserList[] = [];
-			DB.users_chats.forEach((item) => {
-				if (item.chat_id === chatID)
-					users.push({
-						id: item.user_id,
-						role: item.role
-					});
-			});
+			const messages: IMessageResponse[] = (await messagesCollection
+				.find({ receiver_id: chatID })
+				.sort({ sent_at: -1 })
+				.limit(250)
+				.toArray())
+				.map(msg => ({
+					id: msg._id.toString(),
+					sender_id: msg.sender_id,
+					sent_at: msg.sent_at,
+					content: msg.content
+				}));
 
-			const messages: IMessageResponse[] = [];
-			DB.messages.forEach((msg) => {
-				if (msg.chat_id === chatID)
-					messages.push({
-						id: msg.id,
-						content: msg.content,
-						sent_at: msg.sent_at,
-						author_id: msg.author_id
-					});
-			});
+			const users: IChatUsersList[] = [];
+
+			for (const item of chatDB.users) {
+				const user = await usersCollection.findOne({ username: item.username });
+				users.push({
+					...item,
+					avatar_url: user?.avatar_url,
+				});
+			}
 
 			const response: IChatResponse = {
 				chat: {
-					id: chatDB.id,
+					id: chatDB._id.toString(),
 					name: chatDB.name,
-					avatar: chatDB.avatar,
-					type: chatDB.type,
+					avatar_url: chatDB.avatar_url,
+					created: chatDB.created,
 					users,
 				},
-				messages: messages.reverse(),
+				messages,
 			};
 
 			return {
 				status: 200,
 				data: response,
 			};
+		} catch (error) {
+			return {
+				status: 500,
+				error: `Chats repository error: ${String(error)}`,
+			};
+		}
+	};
+
+	getLightChatByID = async (chatID: string)
+		: Promise<InnerResponse<ILightChatResponse>> => {
+		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
+
+		if (!chatsCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
+		try {
+			const chatDB = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
+
+			if (!chatDB || chatDB.deleted) {
+				return {
+					status: 404,
+					error: 'Chat is not found',
+				};
+			}
+
+			return {
+				status: 200,
+				data: {
+					chat: {
+						id: chatDB._id.toString(),
+						name: chatDB.name,
+						avatar_url: chatDB.avatar_url,
+						created: chatDB.created,
+						users: chatDB.users
+					}
+				}
+			};
+		} catch (error) {
+			return {
+				status: 500,
+				error: `Chats repository error: ${String(error)}`,
+			};
+		}
+	};
+
+	createChat = async (chat: ICreateChatRequest, authorUsername: string)
+		: Promise<InnerResponse<ICreateChatResponse>> => {
+		const usersCollection = this.Database.getCollection<IUserDoc>('users');
+		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
+
+		if (!usersCollection || !chatsCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
+		try {
+			const result = await chatsCollection.insertOne({
+				name: chat.name,
+				avatar_url: chat.avatar,
+				created: new Date(),
+				deleted: false,
+				users: [
+					{
+						username: authorUsername,
+						role: 'admin',
+						joined_at: new Date(),
+						removed: false,
+					}
+				]
+			});
+
+			const newChatID = result.insertedId.toString();
+
+			await usersCollection.updateOne(
+				{ username: authorUsername },
+				{ $push: { chat_ids: newChatID } }
+			);
+
+			return {
+				status: 200,
+				data: {
+					chatID: newChatID,
+				}
+			};
 		}
 		catch (error) {
 			return {
@@ -108,36 +245,85 @@ export class ChatsRepository {
 		}
 	};
 
-	createChat = (chat: ICreateChatRequest, authorID: number): InnerResponse => {
+	addToChat = async (chatID: string, username: string)
+		: Promise<InnerResponse<null>> => {
+		const usersCollection = this.Database.getCollection<IUserDoc>('users');
+		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
+
+		if (!usersCollection || !chatsCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
 		try {
-			const newChatID = DB.chats.size + 1;
-			DB.chats.set(
-				newChatID,
-				{
-					id: newChatID,
-					name: chat.name,
-					avatar: chat.avatar,
-					type: 'group',
-					created_at: new Date(),
-				}
+			const user = await usersCollection.findOne({ username: username });
+
+			if (!user || user.deleted)
+				return {
+					status: 404,
+					error: 'User is not found'
+				};
+
+			const result = await chatsCollection.updateOne(
+				{ _id: new ObjectId(chatID) },
+				{ $set: { 'users.$[elem].removed': false } },
+				{ arrayFilters: [ { 'elem.username': username } ] }
 			);
 
-			DB.users_chats.set(
-				DB.users_chats.size + 1,
-				{
-					id: DB.users_chats.size + 1,
-					user_id: authorID,
-					chat_id: newChatID,
-					role: 'admin',
-					joined_at: new Date(),
-				}
+			if (result.modifiedCount === 0)
+				await chatsCollection.updateOne(
+					{ _id: new ObjectId(chatID) },
+					{ $push: { users: {
+						username: username,
+						role: 'default',
+						joined_at: new Date(),
+						removed: false,
+					} } }
+				);
+
+			await usersCollection.updateOne(
+				{ username: username },
+				{ $push: { chat_ids: chatID } }
 			);
 
 			return {
 				status: 200,
-				data: {
-					chatID: newChatID,
-				},
+			};
+		}
+		catch (error) {
+			return {
+				status: 500,
+				error: `Chats repository error: ${String(error)}`,
+			};
+		}
+	};
+
+	removeFromChat = async (chatID: string, username: string)
+		: Promise<InnerResponse<null>> => {
+		const usersCollection = this.Database.getCollection<IUserDoc>('users');
+		const chatsCollection = this.Database.getCollection<IChatDoc>('chats');
+
+		if (!usersCollection || !chatsCollection)
+			return {
+				status: 500,
+				error: 'Database error: Could not connect',
+			};
+
+		try {
+			await chatsCollection.updateOne(
+				{ _id: new ObjectId(chatID) },
+				{ $set: { 'users.$[elem].removed': true } },
+				{ arrayFilters: [ { 'elem.username': username } ] }
+			);
+
+			await usersCollection.updateOne(
+				{ username: username },
+				{ $pull: { chat_ids: chatID } }
+			);
+
+			return {
+				status: 200,
 			};
 		}
 		catch (error) {

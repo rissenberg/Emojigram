@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { Request as JWTRequest } from 'express-jwt';
 import { UsersService } from '../services/service_users';
 
 
@@ -9,12 +10,29 @@ export class UsersAPI {
 		this.UsersService = new UsersService();
 	}
 
-	getUserByID = (req: Request, res: Response) => {
+	getUserByID = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
 
-		const userID = parseInt(req.params.id);
-		const response = this.UsersService.getUserByID(userID);
+		const username = req.params.username;
+		const response = await this.UsersService.getByUsername(username);
 
+		if (response.status === 200)
+			return res.status(200).json(response.data);
+		else
+			return res.status(response.status).json({
+				error: response.error,
+			});
+	};
+
+	searchByUsername = async (req: JWTRequest, res: Response) => {
+		console.log(req.method, req.url);
+
+		const currentUser = req.auth?.user;
+		if (!currentUser)
+			return res.status(401);
+
+		const username = req.params.username;
+		const response = await this.UsersService.searchByUsername(username, currentUser);
 		if (response.status === 200)
 			return res.status(200).json(response.data);
 		else

@@ -1,5 +1,5 @@
-export interface InnerResponse {
+export interface InnerResponse<T> {
 	status: number,
-	data?: any,
+	data?: T,
 	error?: string,
 }

@@ -1,13 +1,53 @@
-export interface IUserResponse {
+export interface IUserWithPassword {
 	user: {
-		id: number,
+		id: string,
 		username: string,
+		password: string,
 		email: string,
-		avatar?: string,
+		avatar_url?: string,
 	}
 }
 
-export interface IChatUserList {
-	id: number,
-	role: string,
+
+export interface IUserResponse {
+	user: {
+		id: string,
+		username: string,
+		email: string,
+		avatar_url?: string,
+	}
+}
+
+export interface IAuthUserResponse {
+	user: {
+		id: string,
+		username: string,
+		email: string,
+		avatar_url?: string
+	},
+	token: string
+}
+
+export interface IUserListResponse {
+	users: {
+		id: string,
+		username: string,
+		email: string,
+		avatar_url?: string,
+	}[]
+}
+
+export interface IChatUsersList {
+	username: string,
+	avatar_url?: string,
+	role: 'default' | 'admin',
+	joined_at: Date,
+	removed: boolean
+}
+
+export interface IUserSignup {
+	username: string,
+	password: string,
+	email: string,
+	avatar?: string,
 }
