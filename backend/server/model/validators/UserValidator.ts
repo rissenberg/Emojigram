@@ -1,4 +1,4 @@
-export const userValidators = (body: any) => {
+export const userValidator = (body: any) => {
 	if (!body.username)
 		return false;
 	else if (typeof body?.username !== 'string')

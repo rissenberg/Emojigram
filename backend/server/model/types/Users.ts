@@ -1,3 +1,14 @@
+export interface IUserWithPassword {
+	user: {
+		id: string,
+		username: string,
+		password: string,
+		email: string,
+		avatar_url?: string,
+	}
+}
+
+
 export interface IUserResponse {
 	user: {
 		id: string,
@@ -5,6 +16,16 @@ export interface IUserResponse {
 		email: string,
 		avatar_url?: string,
 	}
+}
+
+export interface IAuthUserResponse {
+	user: {
+		id: string,
+		username: string,
+		email: string,
+		avatar_url?: string
+	},
+	token: string
 }
 
 export interface IUserListResponse {
@@ -22,4 +43,11 @@ export interface IChatUsersList {
 	role: 'default' | 'admin',
 	joined_at: Date,
 	removed: boolean
+}
+
+export interface IUserSignup {
+	username: string,
+	password: string,
+	email: string,
+	avatar?: string,
 }

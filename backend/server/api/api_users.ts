@@ -15,7 +15,7 @@ export class UsersAPI {
 		console.log(req.method, req.url);
 
 		const username = req.params.username;
-		const response = await this.UsersService.getUserByID(username);
+		const response = await this.UsersService.getByUsername(username);
 
 		if (response.status === 200)
 			return res.status(200).json(response.data);

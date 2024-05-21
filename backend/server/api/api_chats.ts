@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { ChatsService } from '../services/service_chats';
 import { createChatValidator } from '../model/validators/ChatValidators';
-import { userValidators } from '../model/validators/UserValidators';
+import { userValidator } from '../model/validators/UserValidator';
 
 // TODO delete MOCK
 const currentUser = 'Yanka';
@@ -65,7 +65,7 @@ export class ChatsAPI {
 		const chatID = req.params.id;
 
 		const body = req.body;
-		if (!userValidators(body))
+		if (!userValidator(body))
 			return res.status(400).json({
 				error: 'Invalid request body',
 			});
@@ -86,7 +86,7 @@ export class ChatsAPI {
 		const chatID = req.params.id;
 
 		const body = req.body;
-		if (!userValidators(body))
+		if (!userValidator(body))
 			return res.status(400).json({
 				error: 'Invalid request body',
 			});
