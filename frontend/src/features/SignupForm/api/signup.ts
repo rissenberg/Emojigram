@@ -1,8 +1,8 @@
 import { BACKEND_API_URL } from '../../../shared/config/apiConfig/apiConfig';
 import { ICredentials } from '../model/types/Credentials';
 
-export const authLogin = (credentials: ICredentials) => ({
-	url: `${BACKEND_API_URL}/auth/login`,
+export const authSignup = (credentials: ICredentials) => ({
+	url: `${BACKEND_API_URL}/auth/signup`,
 	options: {
 		method: 'POST',
 		headers: {

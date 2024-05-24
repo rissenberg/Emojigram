@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getChatsList } from '../model/selectors/GetChatsList';
-import { useQuery } from '@tanstack/react-query';
 import { getChatList } from '../api/getChatList';
 import { AppDispatch } from '../../../app/providers/StoreProvider';
 import { IGetChatListResponse } from '../model/types/apiResponse';
 import { pushChat } from '../../../app/providers/StoreProvider/lib/slices/ChatsStorage';
+import { useFetch } from '../../../shared/hooks/useFetch';
 
 export const ChatsList = () => {
 	const location = useLocation();
@@ -23,14 +23,14 @@ export const ChatsList = () => {
 		data,
 		error,
 		isFetching,
-	} = useQuery<IGetChatListResponse>(getChatList());
+	} = useFetch<IGetChatListResponse>(getChatList());
 
 	useEffect(() => {
 		setSelectedChat(idSelected);
 	}, [idSelected]);
 
 	useEffect(() => {
-		data?.chats.forEach(chatItem => {
+		data?.chats?.forEach(chatItem => {
 			dispatch(pushChat({
 				chat: chatItem,
 				messages: chatItem.last_message ? [chatItem.last_message] : []
@@ -53,7 +53,7 @@ export const ChatsList = () => {
 	}, []);
 
 	const ListContent = isFetching ? 'Loading...' :
-		error ? error.message :
+		error ? 'Fetch error' :
 			chatsList.map(chatItem =>
 				<ChatItem
 					{...chatItem}

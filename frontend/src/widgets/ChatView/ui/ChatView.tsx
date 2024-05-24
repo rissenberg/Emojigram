@@ -6,11 +6,11 @@ import { useLocation } from 'react-router-dom';
 import { getCurrentChat } from '../model/selectors/GetCurrentChat';
 import { AppDispatch, RootState } from '../../../app/providers/StoreProvider';
 import { Message } from '../../../entities/Message';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { updateChat } from '../../../app/providers/StoreProvider/lib/slices/ChatsStorage';
 import { IGetChatHistoryResponse } from '../model/types/apiResponse';
 import { getChatHistory } from '../api/getChatHistory';
+import { useFetch } from '../../../shared/hooks/useFetch';
 
 export const ChatView = () => {
 	const location = useLocation();
@@ -22,7 +22,7 @@ export const ChatView = () => {
 	const {
 		data,
 		error,
-	} = useQuery<IGetChatHistoryResponse>(getChatHistory(id));
+	} = useFetch<IGetChatHistoryResponse>(getChatHistory(id));
 
 	useEffect(() => {
 		if (!error)

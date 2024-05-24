@@ -1,5 +1,5 @@
-import { MainPage } from './ui/MainPage';
+import { LoginPage } from './ui/LoginPage';
 
 export {
-	MainPage
+	LoginPage
 };

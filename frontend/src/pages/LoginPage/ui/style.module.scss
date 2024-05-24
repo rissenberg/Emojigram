@@ -1,4 +1,39 @@
 .page {
   display: flex;
+  height: 90vh;
+}
 
+.auth_window {
+  background-color: #383f49;
+  width: 300px;
+  padding: 20px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.title {
+  font-size: 24px;
+}
+
+.button_container {
+
+}
+
+.btn {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 5px 40px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+.btn_active {
+  background-color: rgba(255, 255, 255, 0.2);
 }

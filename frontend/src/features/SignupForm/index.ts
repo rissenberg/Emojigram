@@ -1,5 +1,5 @@
-import { LoginForm } from './ui/LoginForm';
+import { SignupForm } from './ui/SignupForm';
 
 export {
-	LoginForm
+	SignupForm
 };

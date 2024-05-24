@@ -1,21 +1,20 @@
-import cls from './style.module.scss';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const LoginPage = () => {
+
+export const LandingPage = () => {
 	const navigate = useNavigate();
 	
 	useEffect(() => {
 		const token = localStorage.getItem('token');
 
-		if (token) {
+		if (token)
 			navigate('/chats');
-		}
+		else
+			navigate('/login');
 	}, []);
 
 	return (
-		<div className={cls.page}>
-
-		</div>
+		<></>
 	);
 };

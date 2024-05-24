@@ -1,5 +1,11 @@
-import { LandingPage } from './ui/LandingPage';
+import { LoginForm } from './ui/LoginForm';
+import { ILoginResponse } from './model/types/LoginResponse';
 
 export {
-	LandingPage
+	LoginForm
 };
+
+export type {
+	ILoginResponse
+};
+
