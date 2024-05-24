@@ -27,9 +27,11 @@ export class UsersAPI {
 	searchByUsername = async (req: JWTRequest, res: Response) => {
 		console.log(req.method, req.url);
 
-		const currentUser = req.auth?.user;
+		const currentUser = req.auth?.username;
 		if (!currentUser)
-			return res.status(401);
+			return res.status(401).json({
+				error: 'User is not authorized',
+			});
 
 		const username = req.params.username;
 		const response = await this.UsersService.searchByUsername(username, currentUser);
