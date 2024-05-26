@@ -1,6 +1,6 @@
 import { IUser } from '../../../../entities/User';
 
-export interface ILoginResponse {
+export interface IAuthResponse {
 	user: IUser,
 	token: string,
 }

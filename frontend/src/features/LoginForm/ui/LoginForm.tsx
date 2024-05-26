@@ -1,7 +1,7 @@
 import cls from './style.module.scss';
 import React, { useEffect, useState } from 'react';
-import { ILoginResponse } from '../model/types/LoginResponse';
-import { authLogin } from '../api/login';
+import { IAuthResponse } from '../../Authorization';
+import { authLogin } from '../../Authorization';
 import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../../shared/hooks/useFetch';
 
@@ -15,7 +15,7 @@ export const LoginForm = () => {
 		data,
 		error,
 		refetch,
-	} = useFetch<ILoginResponse>(authLogin({ login, password }));
+	} = useFetch<IAuthResponse>(authLogin({ login, password }));
 
 	useEffect(() => {
 		if (data && data.token) {

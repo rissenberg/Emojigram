@@ -1,5 +1,5 @@
 import { BACKEND_API_URL } from '../../../shared/config/apiConfig/apiConfig';
-import { ICredentials } from '../model/types/Credentials';
+import { ICredentials } from '../../SignupForm/model/types/Credentials';
 
 export const authSignup = (credentials: ICredentials) => ({
 	url: `${BACKEND_API_URL}/auth/signup`,
@@ -12,7 +12,5 @@ export const authSignup = (credentials: ICredentials) => ({
 		body: JSON.stringify(credentials),
 	},
 	enabled: false,
-	retryDelay: 1000,
-	retryCount: 5,
 });
 

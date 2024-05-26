@@ -11,10 +11,17 @@ export interface IUseFetchProps {
 	},
 	enabled?: boolean,
 	retryCount?: number,
+	retryDelay?: number,
 }
 
 export const useFetch = <T>(props: IUseFetchProps) => {
-	const { url, options, enabled = true, retryCount = 3 } = props;
+	const {
+		url,
+		options,
+		enabled = true,
+		retryCount = 1,
+		retryDelay = 500,
+	} = props;
 
 	options.headers['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
 
@@ -25,6 +32,8 @@ export const useFetch = <T>(props: IUseFetchProps) => {
 	const refetch = async () => {
 		setIsFetching(true);
 		setError(null);
+
+		let currentError = '';
 
 		for (let it = 0; it < retryCount; it++) {
 			try {
@@ -41,17 +50,27 @@ export const useFetch = <T>(props: IUseFetchProps) => {
 
 				return;
 			} catch (err: unknown) {
-				setIsFetching(false);
-				setError(String(err));
+				// currentError = String(err);
+				currentError = 'Fetch Error';
 			}
+
+			await wait(retryDelay);
 		}
+
+		setIsFetching(false);
+		setError(currentError);
 	};
 
 	useEffect(() => {
-		if (enabled) {
+		if (enabled)
 			refetch();
-		}
 	}, []);
 
 	return { data, isFetching, error, refetch };
+};
+
+const wait = (delay: number) => {
+	return new Promise<void>((resolve) => {
+		setTimeout(() => resolve(), delay);
+	});
 };

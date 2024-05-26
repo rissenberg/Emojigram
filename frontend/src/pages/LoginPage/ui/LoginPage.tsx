@@ -3,20 +3,21 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { LoginForm } from '../../../features/LoginForm';
 import { SignupForm } from '../../../features/SignupForm';
+import { useCurrentUser } from '../../../entities/User';
 
 export const LoginPage = () => {
 	const location = useLocation();
 	const selected = location.hash.replace('#', '');
 
+	const { currentUser } = useCurrentUser();
+
 	const navigate = useNavigate();
 	
 	useEffect(() => {
-		const token = localStorage.getItem('token');
-
-		if (token) {
+		if (currentUser) {
 			navigate('/chats');
 		}
-	}, []);
+	}, [currentUser]);
 
 	const handleSelectLogin = () => {
 		navigate('/login');

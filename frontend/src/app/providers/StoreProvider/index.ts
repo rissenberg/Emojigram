@@ -1,8 +1,14 @@
 import { StoreProvider } from './ui/StoreProvider';
+
+import { clearCurrentUser, newCurrentUser } from './lib/slices/CurrentUserStorage';
+
 import { RootState, AppDispatch } from './model/types';
 
 export {
-	StoreProvider
+	StoreProvider,
+
+	clearCurrentUser,
+	newCurrentUser,
 };
 
 export type {
