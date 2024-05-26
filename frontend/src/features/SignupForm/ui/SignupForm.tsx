@@ -1,9 +1,9 @@
 import cls from './style.module.scss';
 import React, { useEffect, useState } from 'react';
 import { authSignup } from '../../Authorization';
-import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../../shared/hooks/useFetch';
 import { IAuthResponse } from '../../Authorization';
+import { useCurrentUser } from '../../../entities/User';
 
 
 export const SignupForm = () => {
@@ -11,7 +11,8 @@ export const SignupForm = () => {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [repPassword, setRepPassword] = useState('');
-	const navigate = useNavigate();
+
+	const { setCurrentUser } = useCurrentUser();
 
 	const {
 		data,
@@ -22,7 +23,7 @@ export const SignupForm = () => {
 	useEffect(() => {
 		if (data && data.token) {
 			localStorage.setItem('token', data.token);
-			navigate('/chats');
+			setCurrentUser(data.user);
 		}
 	}, [data]);
 

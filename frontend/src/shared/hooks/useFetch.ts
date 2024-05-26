@@ -58,6 +58,7 @@ export const useFetch = <T>(props: IUseFetchProps) => {
 		}
 
 		setIsFetching(false);
+		setData(prev => prev);
 		setError(currentError);
 	};
 

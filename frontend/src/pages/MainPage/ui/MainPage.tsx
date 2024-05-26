@@ -15,7 +15,7 @@ export const MainPage = () => {
 		}
 	}, [currentUser]);
 
-	return (
+	return currentUser && (
 		<div className={cls.page}>
 			<ChatsList />
 			<ChatView />

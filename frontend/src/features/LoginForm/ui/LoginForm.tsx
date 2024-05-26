@@ -2,14 +2,15 @@ import cls from './style.module.scss';
 import React, { useEffect, useState } from 'react';
 import { IAuthResponse } from '../../Authorization';
 import { authLogin } from '../../Authorization';
-import { useNavigate } from 'react-router-dom';
 import { useFetch } from '../../../shared/hooks/useFetch';
+import { useCurrentUser } from '../../../entities/User';
 
 
 export const LoginForm = () => {
 	const [login, setLogin] = useState('');
 	const [password, setPassword] = useState('');
-	const navigate = useNavigate();
+
+	const { setCurrentUser } = useCurrentUser();
 
 	const {
 		data,
@@ -20,7 +21,7 @@ export const LoginForm = () => {
 	useEffect(() => {
 		if (data && data.token) {
 			localStorage.setItem('token', data.token);
-			navigate('/chats');
+			setCurrentUser(data.user);
 		}
 	}, [data]);
 

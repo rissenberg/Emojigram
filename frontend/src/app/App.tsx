@@ -7,7 +7,7 @@ import { LandingPage } from '../pages/LandingPage';
 import { useCheckAuth } from '../features/Authorization';
 
 const App = () => {
-	const checkAuth = useCheckAuth();
+	const { checkAuth, isDone } = useCheckAuth();
 
 	useEffect(() => {
 		checkAuth();
@@ -15,6 +15,9 @@ const App = () => {
 
 	return (
 		<div className="App">
+
+			{ !isDone && <div className="check-auth_loading" /> }
+
 			<Routes>
 				<Route path="/chats" element={<MainPage/>}/>
 				<Route path="/login" element={<LoginPage/>}/>

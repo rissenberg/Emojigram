@@ -12,7 +12,7 @@ export const LoginPage = () => {
 	const { currentUser } = useCurrentUser();
 
 	const navigate = useNavigate();
-	
+
 	useEffect(() => {
 		if (currentUser) {
 			navigate('/chats');

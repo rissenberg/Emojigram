@@ -1,36 +1,43 @@
 import { useFetch } from '../../../shared/hooks/useFetch';
 import { refreshToken } from '../api/refreshToken';
-import { useEffect } from 'react';
-import { useCurrentUser } from '../../../entities/User/hooks/useCurrentUser';
+import { useEffect, useState } from 'react';
+import { useCurrentUser } from '../../../entities/User';
 import { IAuthResponse } from '../model/types/AuthResponse';
-import { useNavigate } from 'react-router-dom';
 
 
 export const useCheckAuth = () => {
 	const { setCurrentUser } = useCurrentUser();
-	const navigate = useNavigate();
+	const [ isDone, setIsDone ] = useState<boolean>(false);
+	const [ isAuth, setIsAuth ] = useState<boolean>(false);
 	const {
 		data,
 		error,
-		refetch
+		refetch,
+		isFetching
 	} = useFetch<IAuthResponse>(refreshToken());
 
+
 	useEffect(() => {
+		if (!isFetching)
+			setIsDone(true);
+
 		if (data && !error) {
 			setCurrentUser(data.user);
 			localStorage.setItem('token', data.token);
 
-			navigate('/chats');
+			setIsAuth(true);
 			return;
 		}
-
 		setCurrentUser(null);
-		localStorage.setItem('token', '');
+		localStorage.removeItem('token');
 
-		navigate('/login');
+		setIsAuth(false);
 	}, [data, error]);
 
-	return () => {
+	const checkAuth = () => {
+		setIsDone(false);
 		refetch();
 	};
+
+	return { checkAuth, isAuth, isDone };
 };

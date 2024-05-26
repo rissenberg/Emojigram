@@ -12,9 +12,9 @@ import { useFetch } from '../../../shared/hooks/useFetch';
 
 export const ChatsList = () => {
 	const location = useLocation();
-	const idSelected = parseInt(location.hash.replace('#', ''));
+	const idSelected = location.hash.replace('#', '');
 
-	const [selectedChat, setSelectedChat] = useState<number | null>(idSelected);
+	const [selectedChat, setSelectedChat] = useState<string | null>(idSelected);
 	const chatsList = useSelector(getChatsList);
 	const navigate = useNavigate();
 	const dispatch = useDispatch<AppDispatch>();

@@ -1,5 +1,5 @@
 interface IChatBase {
-  id: number,
+  id: string,
   created?: Date,
 }
 

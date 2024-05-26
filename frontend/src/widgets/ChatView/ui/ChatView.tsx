@@ -14,7 +14,7 @@ import { useFetch } from '../../../shared/hooks/useFetch';
 
 export const ChatView = () => {
 	const location = useLocation();
-	const id = parseInt(location.hash.replace('#', ''));
+	const id = location.hash.replace('#', '');
 
 	const currentChat = useSelector((state: RootState) => getCurrentChat(state, id));
 	const dispatch = useDispatch<AppDispatch>();
@@ -22,7 +22,13 @@ export const ChatView = () => {
 	const {
 		data,
 		error,
+		refetch
 	} = useFetch<IGetChatHistoryResponse>(getChatHistory(id));
+
+	useEffect(() => {
+		if (id)
+			refetch();
+	}, [location]);
 
 	useEffect(() => {
 		if (!error)

@@ -14,7 +14,5 @@ export const LandingPage = () => {
 			navigate('/login');
 	}, []);
 
-	return (
-		<></>
-	);
+	return <></>;
 };
