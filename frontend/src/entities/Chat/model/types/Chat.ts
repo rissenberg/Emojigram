@@ -11,7 +11,7 @@ interface IChatBase {
 interface IChatGroup extends IChatBase {
   type: 'group';
   users_ids: number[];
-  avatar: string;
+  avatar_url: string;
   name: string;
 }
 

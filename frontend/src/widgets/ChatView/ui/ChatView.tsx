@@ -46,7 +46,7 @@ export const ChatView = () => {
 				<>
 					<div className={cls.chatView_header}>
 						<div className={cls.header_chatName}>
-							{currentChat.chat.type === 'group' && currentChat.chat.name}
+							{currentChat.chat.name}
 						</div>
 						<div className={cls.header_buttonContainer}>
 							<img src={MoreIcon} alt="more"/>
