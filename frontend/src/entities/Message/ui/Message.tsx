@@ -3,14 +3,14 @@ import { IMessage } from '../model/types/Message';
 import { useGetUser } from '../../User';
 
 export const Message = (message: IMessage) => {
-	const [ author]  = useGetUser(message.author_id);
+	const [ author]  = useGetUser(message.sender_id);
 
 	const avatarStyle = {
-		backgroundColor: author ? author.avatar : '#777',
+		backgroundColor: author?.avatar_url || '#777',
 	};
 
 	const nicknameStyle = {
-		color: author ? author.avatar : '#777',
+		color: author?.avatar_url || '#777',
 	};
 
 	// TODO делать разные стили для своего и чужого сообщения
@@ -22,7 +22,7 @@ export const Message = (message: IMessage) => {
 			<div className={cls.message}>
 
 				<div className={cls.messageText} style={nicknameStyle}>
-					{author && author.username}
+					{message.sender_id}
 				</div>
 
 				<div className={cls.messageText}>

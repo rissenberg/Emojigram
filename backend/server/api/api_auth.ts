@@ -17,7 +17,9 @@ export class AuthAPI {
 		console.log(req.method, req.url);
 
 		if (req.auth)
-			return res.status(403).json({ error: 'You have an active session - logout first' });
+			return res.status(403).json({
+				error: 'You have an active session - logout first'
+			});
 
 		const credentials = req.body;
 		if (!loginValidator(credentials))
@@ -49,7 +51,9 @@ export class AuthAPI {
 		console.log(req.method, req.url);
 
 		if (req.auth)
-			return res.status(403).json({ error: 'You have an active session - logout first' });
+			return res.status(403).json({
+				error: 'You have an active session - logout first'
+			});
 
 		const body = req.body;
 		if (!signupValidator(body))

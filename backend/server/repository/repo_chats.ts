@@ -102,6 +102,12 @@ export class ChatsRepository {
 			};
 
 		try {
+			if (!ObjectId.isValid(chatID))
+				return {
+					status: 404,
+					error: 'Chat is not found',
+				};
+
 			const chatDB = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
 
 			if (!chatDB || chatDB.deleted) {
@@ -167,6 +173,12 @@ export class ChatsRepository {
 			};
 
 		try {
+			if (!ObjectId.isValid(chatID))
+				return {
+					status: 404,
+					error: 'Chat is not found',
+				};
+
 			const chatDB = await chatsCollection.findOne({ _id: new ObjectId(chatID) });
 
 			if (!chatDB || chatDB.deleted) {
@@ -257,6 +269,12 @@ export class ChatsRepository {
 			};
 
 		try {
+			if (!ObjectId.isValid(chatID))
+				return {
+					status: 404,
+					error: 'Chat is not found',
+				};
+
 			const user = await usersCollection.findOne({ username: username });
 
 			if (!user || user.deleted)
@@ -311,6 +329,12 @@ export class ChatsRepository {
 			};
 
 		try {
+			if (!ObjectId.isValid(chatID))
+				return {
+					status: 404,
+					error: 'Chat is not found',
+				};
+
 			await chatsCollection.updateOne(
 				{ _id: new ObjectId(chatID) },
 				{ $set: { 'users.$[elem].removed': true } },

@@ -33,7 +33,9 @@ app.use((err: Error, req: JWTRequest, res: Response, next: NextFunction) => {
 		if (req.path === `${API_PATH_PREFIX}/auth/login` || req.path ===`${API_PATH_PREFIX}/auth/signup`)
 			next();
 		else
-			res.status(401).send('Invalid or empty auth token');
+			res.status(401).json({
+				error: 'User is not authorized',
+			});
 	} else {
 		next(err);
 	}
